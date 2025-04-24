@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Notifications\ResetPassword;
 
 class User extends Authenticatable 
 {
@@ -43,5 +44,13 @@ class User extends Authenticatable
     public function hardDiskReplacements(): HasMany
     {
         return $this->hasMany(HardDiskReplacement::class);
+    }
+
+    /**
+     * 發送密碼重設通知
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPassword($token));
     }
 }
