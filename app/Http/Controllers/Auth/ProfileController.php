@@ -59,14 +59,14 @@ class ProfileController extends Controller
         
         $validated = $request->validate([
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
-            'password' => ['required', 'current_password'],
+            'email_password' => ['required', 'current_password'],
         ], [
             'email.required' => '請輸入電子郵件',
             'email.email' => '請輸入有效的電子郵件地址',
             'email.max' => '電子郵件不能超過 255 個字元',
             'email.unique' => '此電子郵件已被使用',
-            'password.required' => '請輸入密碼',
-            'password.current_password' => '密碼不正確',
+            'email_password.required' => '請輸入密碼',
+            'email_password.current_password' => '密碼不正確',
         ]);
 
         /**

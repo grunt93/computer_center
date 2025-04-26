@@ -158,9 +158,9 @@
                                     <label for="email_password" class="form-label">請輸入密碼確認</label>
                                     <div class="input-password-wrapper">
                                         <input id="email_password" type="password" 
-                                            class="form-control @error('password') is-invalid @enderror" 
-                                            name="password" required>
-                                        @error('password')
+                                            class="form-control @error('email_password') is-invalid @enderror" 
+                                            name="email_password" required>
+                                        @error('email_password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
@@ -240,7 +240,7 @@ $(document).ready(function() {
     @endif
 
     // 檢查是否有修改電子郵件相關的錯誤
-    @if($errors->has('email') || $errors->has('password'))
+    @if($errors->has('email') || $errors->has('email_password'))
         $('#emailModal').modal('show');
     @endif
 
