@@ -140,12 +140,13 @@
                             <div class="modal-body">
                                 <p class="text-danger">警告：此操作無法復原！</p>
                                 <div class="mb-3">
-                                    <label for="delete_password" class="form-label">請輸入密碼以確認</label>
+                                    <label for="delete_confirmation" class="form-label">請輸入密碼以確認</label>
                                     <div class="input-password-wrapper">
-                                        <input id="delete_password" type="password" 
-                                            class="form-control @error('password') is-invalid @enderror" 
-                                            name="password" required>
-                                        @error('password')
+                                        <input id="delete_confirmation" type="password" 
+                                            class="form-control @error('delete_confirmation') is-invalid @enderror" 
+                                            name="delete_confirmation" required>
+                                        <i class="bi bi-eye password-toggle-icon" data-target="delete_confirmation"></i>
+                                        @error('delete_confirmation')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
@@ -184,12 +185,12 @@ $(document).ready(function() {
     });
 
     // 檢查是否有修改密碼相關的錯誤
-    @if(($errors->has('current_password') || $errors->has('password') || $errors->has('password_confirmation')) && !request()->is('*/delete'))
+    @if($errors->has('current_password') || $errors->has('password') || $errors->has('password_confirmation'))
         $('#passwordModal').modal('show');
     @endif
 
     // 檢查是否有刪除帳號相關的錯誤
-    @if($errors->has('password') && request()->is('*/delete'))
+    @if($errors->has('delete_confirmation'))
         $('#deleteModal').modal('show');
     @endif
 });

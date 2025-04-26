@@ -110,10 +110,10 @@ class ProfileController extends Controller
         $user = Auth::user();
         
         $request->validate([
-            'password' => ['required', 'current_password'],
+            'delete_confirmation' => ['required', 'current_password'],
         ], [
-            'password.required' => '請輸入密碼',
-            'password.current_password' => '密碼不正確',
+            'delete_confirmation.required' => '請輸入密碼',
+            'delete_confirmation.current_password' => '密碼不正確',
         ]);
 
         Auth::logout();
