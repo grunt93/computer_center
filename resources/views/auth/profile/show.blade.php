@@ -145,7 +145,6 @@
                                         <input id="delete_confirmation" type="password" 
                                             class="form-control @error('delete_confirmation') is-invalid @enderror" 
                                             name="delete_confirmation" required>
-                                        <i class="bi bi-eye password-toggle-icon" data-target="delete_confirmation"></i>
                                         @error('delete_confirmation')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
