@@ -1,0 +1,128 @@
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
+use App\Models\User;
+
+class ProfileController extends Controller
+{
+    public function show()
+    {
+        return view('auth.profile.show', [
+            'user' => Auth::user()
+        ]);
+    }
+
+    public function edit()
+    {
+        return view('auth.profile.edit', [
+            'user' => Auth::user()
+        ]);
+    }
+
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+        
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'student_id' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
+        ], [
+            'name.required' => '請輸入姓名',
+            'name.max' => '姓名不能超過 255 個字元',
+            'student_id.required' => '請輸入學號',
+            'student_id.max' => '學號不能超過 255 個字元',
+            'email.required' => '請輸入電子郵件',
+            'email.email' => '請輸入有效的電子郵件地址',
+            'email.max' => '電子郵件不能超過 255 個字元',
+            'email.unique' => '此電子郵件已被使用',
+        ]);
+
+        /**
+         * @var User $user
+         */
+        $user->update($validated);
+
+        return redirect()->route('profile.show')
+            ->with('status', '個人資料已更新成功！');
+    }
+
+    public function updateEmail(Request $request)
+    {
+        $user = Auth::user();
+        
+        $validated = $request->validate([
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
+            'password' => ['required', 'current_password'],
+        ], [
+            'email.required' => '請輸入電子郵件',
+            'email.email' => '請輸入有效的電子郵件地址',
+            'email.max' => '電子郵件不能超過 255 個字元',
+            'email.unique' => '此電子郵件已被使用',
+            'password.required' => '請輸入密碼',
+            'password.current_password' => '密碼不正確',
+        ]);
+
+        /**
+         * @var User $user
+         */
+        $user->update([
+            'email' => $validated['email'],
+        ]);
+
+        return redirect()->route('profile.show')
+            ->with('status', '電子郵件已更新成功！');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $user = Auth::user();
+        
+        $validated = $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ], [
+            'current_password.required' => '請輸入目前密碼',
+            'current_password.current_password' => '目前密碼不正確',
+            'password.required' => '請輸入新密碼',
+            'password.confirmed' => '兩次輸入的密碼不相符',
+        ]);
+
+        /**
+         * @var User $user
+         */
+        $user->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return redirect()->route('profile.show')
+            ->with('status', '密碼已更新成功！');
+    }
+
+    public function deleteAccount(Request $request)
+    {
+        $user = Auth::user();
+        
+        $request->validate([
+            'password' => ['required', 'current_password'],
+        ], [
+            'password.required' => '請輸入密碼',
+            'password.current_password' => '密碼不正確',
+        ]);
+
+        Auth::logout();
+        /**
+         * @var User $user
+         */
+        $user->delete();
+
+        return redirect()->route('home')
+            ->with('status', '帳號已成功刪除！');
+    }
+}
