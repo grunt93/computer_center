@@ -92,6 +92,7 @@ class ProfileController extends Controller
             'current_password.current_password' => '目前密碼不正確',
             'password.required' => '請輸入新密碼',
             'password.confirmed' => '兩次輸入的密碼不相符',
+            'password.min' => '密碼至少需要 :min 個字元',
         ]);
 
         /**
