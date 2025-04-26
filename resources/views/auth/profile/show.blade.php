@@ -37,6 +37,9 @@
                             <a href="{{ route('profile.edit') }}" class="btn btn-info btn-sm me-2">
                                 編輯資料
                             </a>
+                            <button type="button" class="btn btn-warning btn-sm me-2" data-bs-toggle="modal" data-bs-target="#emailModal">
+                                修改信箱
+                            </button>
                             <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#passwordModal">
                                 修改密碼
                             </button>
@@ -126,6 +129,54 @@
                 </div>
             </div>
 
+            <!-- 修改信箱 Modal -->
+            <div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="emailModalLabel">修改電子郵件</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form method="POST" action="{{ route('profile.email.update') }}">
+                            @csrf
+                            @method('PUT')
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">新電子郵件</label>
+                                    <input id="email" type="email" 
+                                        class="form-control @error('email') is-invalid @enderror" 
+                                        name="email" 
+                                        value="{{ old('email', $user->email) }}" 
+                                        required>
+                                    @error('email')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email_password" class="form-label">請輸入密碼確認</label>
+                                    <div class="input-password-wrapper">
+                                        <input id="email_password" type="password" 
+                                            class="form-control @error('password') is-invalid @enderror" 
+                                            name="password" required>
+                                        @error('password')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                                <button type="submit" class="btn btn-primary">確認修改</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
             <!-- 刪除帳號 Modal -->
             <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -186,6 +237,11 @@ $(document).ready(function() {
     // 檢查是否有修改密碼相關的錯誤
     @if($errors->has('current_password') || $errors->has('password') || $errors->has('password_confirmation'))
         $('#passwordModal').modal('show');
+    @endif
+
+    // 檢查是否有修改電子郵件相關的錯誤
+    @if($errors->has('email') || $errors->has('password'))
+        $('#emailModal').modal('show');
     @endif
 
     // 檢查是否有刪除帳號相關的錯誤
