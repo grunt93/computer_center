@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
@@ -44,15 +45,31 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         try {
-            // 驗證請求資料
+            // 修改驗證規則
             $request->validate([
-                'email' => ['required', 'email'],
+                'email' => ['required'],
                 'password' => ['required', 'string']
             ], [
                 'email.required' => '請輸入電子郵件',
-                'email.email' => '請輸入有效的電子郵件地址',
                 'password.required' => '請輸入密碼'
             ]);
+
+            // 檢查是否為管理員登入
+            if ($request->email === 'admin') {
+                $credentials = [
+                    'email' => $request->email,
+                    'password' => $request->password,
+                    'role' => 'admin'
+                ];
+            } else {
+                // 一般用戶驗證 email 格式
+                if (!filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
+                    throw ValidationException::withMessages([
+                        'email' => ['請輸入有效的電子郵件地址']
+                    ]);
+                }
+                $credentials = $request->only('email', 'password');
+            }
 
             // 檢查登入次數限制
             $maxAttempts = 5;
@@ -64,10 +81,10 @@ class LoginController extends Controller
             }
 
             // 嘗試登入
-            if (!$this->attemptLogin($request)) {
+            if (!Auth::attempt($credentials, $request->boolean('remember'))) {
                 $this->limiter()->hit($this->throttleKey($request));
                 throw ValidationException::withMessages([
-                    'email' => ['電子郵件或密碼錯誤']
+                    'email' => ['帳號或密碼錯誤']
                 ]);
             }
 
