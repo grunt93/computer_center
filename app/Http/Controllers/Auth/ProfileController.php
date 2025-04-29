@@ -31,17 +31,12 @@ class ProfileController extends Controller
         
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'student_id' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
+            'student_id' => ['required', 'string', 'max:255']
         ], [
             'name.required' => '請輸入姓名',
             'name.max' => '姓名不能超過 255 個字元',
             'student_id.required' => '請輸入學號',
             'student_id.max' => '學號不能超過 255 個字元',
-            'email.required' => '請輸入電子郵件',
-            'email.email' => '請輸入有效的電子郵件地址',
-            'email.max' => '電子郵件不能超過 255 個字元',
-            'email.unique' => '此電子郵件已被使用',
         ]);
 
         /**
