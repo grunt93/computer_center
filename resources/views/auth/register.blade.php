@@ -126,6 +126,11 @@ $(document).ready(function() {
         }
     });
 
+    // 將學號自動轉為大寫
+    $('#student_id').on('input', function() {
+        $(this).val($(this).val().toUpperCase());
+    });
+
     $('form').submit(function(e) {
         // 將學號轉為大寫
         const studentIdInput = $('#student_id');
