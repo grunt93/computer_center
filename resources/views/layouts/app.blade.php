@@ -60,10 +60,12 @@
                                 </a>
                                 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('profile.show') }}">
-                                        個人資料
-                                    </a>
-                                    <div class="dropdown-divider"></div>
+                                    @if(Auth::user()->email !== 'admin')
+                                        <a class="dropdown-item" href="{{ route('profile.show') }}">
+                                            個人資料
+                                        </a>
+                                        <div class="dropdown-divider"></div>
+                                    @endif
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
                                                     document.getElementById('logout-form').submit();">
