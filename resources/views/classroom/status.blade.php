@@ -20,33 +20,61 @@
                 </div>
             </div>
 
-            <div class="row" id="classrooms-container">
-                @if($classrooms->count() > 0)
-                    @foreach($classrooms as $classroom)
-                        @php
-                            $isBusy = isset($busyClassrooms[$classroom->code]) && $busyClassrooms[$classroom->code] === 'Y';
-                            $bgColor = $isBusy ? 'bg-danger' : 'bg-success';
-                            $status = $isBusy ? '上課中' : '未使用';
-                        @endphp
-                        <div class="col-md-3 col-lg-2 mb-3">
-                            <div class="card {{ $bgColor }} text-white shadow classroom-card" 
-                                 data-bs-toggle="modal" 
-                                 data-bs-target="#diskReplacementModal" 
-                                 data-classroom-code="{{ $classroom->code }}"
-                                 style="cursor: pointer;">
-                                <div class="card-body text-center">
-                                    <h5 class="card-title fw-bold">{{ $classroom->code }}</h5>
-                                    <p class="card-text mb-0">{{ $status }}</p>
+            @php
+                // 按樓層分組教室
+                $floorClassrooms = [];
+                foreach ($classrooms as $classroom) {
+                    // 假設教室代碼格式為 [學院代碼][樓層][編號]，如 A101、A205 等
+                    if (strlen($classroom->code) >= 2) {
+                        $floor = substr($classroom->code, 1, 1);
+                        if (!isset($floorClassrooms[$floor])) {
+                            $floorClassrooms[$floor] = [];
+                        }
+                        $floorClassrooms[$floor][] = $classroom;
+                    } else {
+                        // 處理不符合預期格式的教室代碼
+                        if (!isset($floorClassrooms['其他'])) {
+                            $floorClassrooms['其他'] = [];
+                        }
+                        $floorClassrooms['其他'][] = $classroom;
+                    }
+                }
+                // 排序樓層
+                ksort($floorClassrooms);
+            @endphp
+
+            @foreach($floorClassrooms as $floor => $floorRooms)
+                <div class="mt-4">
+                    <h4 class="border-bottom pb-2 mb-3">{{ $currentBuilding }}{{ $floor }}樓</h4>
+                    <div class="row">
+                        @foreach($floorRooms as $classroom)
+                            @php
+                                $isBusy = isset($busyClassrooms[$classroom->code]) && $busyClassrooms[$classroom->code] === 'Y';
+                                $bgColor = $isBusy ? 'bg-danger' : 'bg-success';
+                                $status = $isBusy ? '上課中' : '未使用';
+                            @endphp
+                            <div class="col-md-3 col-lg-2 mb-3">
+                                <div class="card {{ $bgColor }} text-white shadow classroom-card" 
+                                     data-bs-toggle="modal" 
+                                     data-bs-target="#diskReplacementModal" 
+                                     data-classroom-code="{{ $classroom->code }}"
+                                     style="cursor: pointer;">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title fw-bold">{{ $classroom->code }}</h5>
+                                        <p class="card-text mb-0">{{ $status }}</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
-                @else
-                    <div class="col-12 text-center">
-                        <p class="text-muted">沒有找到教室資料</p>
+                        @endforeach
                     </div>
-                @endif
-            </div>
+                </div>
+            @endforeach
+
+            @if(count($classrooms) === 0)
+                <div class="col-12 text-center mt-4">
+                    <p class="text-muted">沒有找到教室資料</p>
+                </div>
+            @endif
         </div>
     </div>
 
