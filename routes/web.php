@@ -56,5 +56,6 @@ Route::controller(DiskReplacementController::class)
     ->prefix('disk-replacement')
     ->name('disk-replacement.')
     ->group(function(){
-        Route::post('/disk-replacement', 'store')->name('store');
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->name('store');
     });

@@ -50,6 +50,9 @@
                                 </li>
                             @endif
                         @endauth
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('disk-replacement.index') }}">硬碟更換記錄</a>
+                        </li>
                     </ul>
 
                     <!-- 右邊 -->

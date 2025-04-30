@@ -4,11 +4,58 @@ namespace App\Http\Controllers;
 
 use App\Models\DiskReplacement;
 use App\Models\Schedule;
+use App\Models\Classroom;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DiskReplacementController extends Controller
 {
+    public function index(Request $request)
+    {
+        $query = DiskReplacement::with(['user', 'classroom']);
+        
+        // 篩選條件
+        if ($request->has('smtr') && $request->smtr) {
+            $query->where('smtr', $request->smtr);
+        }
+        
+        if ($request->has('building') && $request->building) {
+            $query->where('classroom_code', 'like', $request->building . '%');
+        }
+        
+        if ($request->has('classroom_code') && $request->classroom_code) {
+            $query->where('classroom_code', 'like', $request->classroom_code . '%');
+        }
+        
+        // 新增日期篩選
+        if ($request->filled('start_date')) {
+            $query->whereDate('replaced_at', '>=', $request->start_date);
+        }
+        
+        if ($request->filled('end_date')) {
+            $query->whereDate('replaced_at', '<=', $request->end_date);
+        }
+        
+        // 排序
+        $query->orderBy('replaced_at', 'desc');
+        
+        $replacements = $query->paginate(15);
+        
+        // 取得所有學期供篩選
+        $semesters = DiskReplacement::select('smtr')
+                    ->distinct()
+                    ->orderBy('smtr', 'desc')
+                    ->pluck('smtr');
+                    
+        // 取得所有建築物供篩選
+        $buildings = Classroom::select(DB::raw('SUBSTRING(code, 1, 1) as building'))
+                    ->distinct()
+                    ->pluck('building');
+        
+        return view('disk_placement.index', compact('replacements', 'semesters', 'buildings', 'request'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
