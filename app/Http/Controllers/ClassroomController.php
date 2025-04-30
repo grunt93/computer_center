@@ -133,7 +133,7 @@ class ClassroomController extends Controller
         $smtr = $request->input('smtr');
 
         try {
-            Schedule::query()->where('smtr', $smtr)->delete();
+            Schedule::query()->delete();
 
             // 取得所有教室
             $classrooms = Classroom::all();
