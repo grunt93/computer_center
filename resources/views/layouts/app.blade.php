@@ -66,6 +66,12 @@
                                         </a>
                                         <div class="dropdown-divider"></div>
                                     @endif
+                                    @if(Auth::user()->role === 'admin')
+                                        <a class="dropdown-item" href="{{ route('profile.users.index') }}">
+                                            用戶管理
+                                        </a>
+                                        <div class="dropdown-divider"></div>
+                                    @endif
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                         onclick="event.preventDefault();
                                                     document.getElementById('logout-form').submit();">
