@@ -32,7 +32,7 @@
                                 <td>{{ $user->email }}</td>
                                 <td>{{ $user->role }}</td>
                                 <td>
-                                    @if($user->email !== 'admin')
+                                    @if($user->email !== 'admin' && $user->id !== Auth::id())
                                         <a href="{{ route('profile.users.show', $user) }}" class="btn btn-sm btn-info">查看</a>
                                         <a href="{{ route('profile.users.edit', $user) }}" class="btn btn-sm btn-primary">編輯</a>
                                     @endif
