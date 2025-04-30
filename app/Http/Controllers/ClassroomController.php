@@ -120,7 +120,7 @@ class ClassroomController extends Controller
         $smtr = $request->input('smtr');
 
         try {
-            Schedule::query()->where('smtr', $smtr)->delete();
+            Schedule::query()->delete();
             $classrooms = Classroom::all();
 
             foreach ($classrooms as $classroom) {
