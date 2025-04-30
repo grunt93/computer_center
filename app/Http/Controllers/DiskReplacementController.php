@@ -10,14 +10,11 @@ use Illuminate\Support\Facades\Auth;
 
 class DiskReplacementController extends Controller
 {
-    /**
-     * 建立新的硬碟更換記錄
-     */
     public function store(Request $request)
     {
         $request->validate([
             'classroom_code' => 'required|exists:classrooms,code',
-            'issue' => 'required|string',
+            'issue' => 'nullable|string',
         ]);
 
         // 獲取該教室最新的學期資訊

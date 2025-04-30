@@ -74,8 +74,8 @@
                     <input type="hidden" name="classroom_code" id="classroom_code_input">
                     
                     <div class="mb-3">
-                        <label for="issue" class="form-label">問題描述</label>
-                        <textarea class="form-control" id="issue" name="issue" rows="3" required></textarea>
+                        <label for="issue" class="form-label">問題描述 (若無問題，可留空)</label>
+                        <textarea class="form-control" id="issue" name="issue" rows="3"></textarea>
                     </div>
                     
                     <div class="mb-3 form-check">
