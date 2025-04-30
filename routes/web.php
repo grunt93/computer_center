@@ -42,3 +42,4 @@ Route::controller(ProfileController::class)
 
 Route::get('/classroom/refresh', [ClassroomController::class, 'showRefreshForm'])->name('classroom.refresh.form');
 Route::post('/classroom/refresh', [ClassroomController::class, 'refresh'])->name('classroom.refresh');
+Route::get('/classroom/status', [ClassroomController::class, 'status'])->name('classroom.status');

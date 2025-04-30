@@ -38,7 +38,10 @@
                     <!-- 左邊 -->
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url('/') }}">首頁</a>
+                            <a class="nav-link" href="{{ route('home') }}">首頁</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('classroom.status') }}">教室狀態</a>
                         </li>
                         @auth
                             @if(Auth::user()->role === 'admin')
