@@ -52,7 +52,7 @@
     </div>
 
     <div class="mt-2 text-center">
-        <p>當前顯示: {{ $buildings[$currentBuilding] }}</p>
+        <p>當前顯示: {{ isset($currentBuilding) && isset($buildings[$currentBuilding]) ? $buildings[$currentBuilding] : '未知學院' }}</p>
     </div>
 </div>
 
