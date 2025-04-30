@@ -29,7 +29,11 @@
                             $status = $isBusy ? '上課中' : '未使用';
                         @endphp
                         <div class="col-md-3 col-lg-2 mb-3">
-                            <div class="card {{ $bgColor }} text-white shadow">
+                            <div class="card {{ $bgColor }} text-white shadow classroom-card" 
+                                 data-bs-toggle="modal" 
+                                 data-bs-target="#diskReplacementModal" 
+                                 data-classroom-code="{{ $classroom->code }}"
+                                 style="cursor: pointer;">
                                 <div class="card-body text-center">
                                     <h5 class="card-title fw-bold">{{ $classroom->code }}</h5>
                                     <p class="card-text mb-0">{{ $status }}</p>
@@ -56,6 +60,33 @@
     </div>
 </div>
 
+<!-- 硬碟更換模態框 -->
+<div class="modal fade" id="diskReplacementModal" tabindex="-1" aria-labelledby="diskReplacementModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="diskReplacementModalLabel">硬碟更換記錄</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="diskReplacementForm" method="POST" action="{{ route('disk-replacement.store') }}">
+                @csrf
+                <div class="modal-body">
+                    <input type="hidden" name="classroom_code" id="classroom_code_input">
+                    
+                    <div class="mb-3">
+                        <label for="issue" class="form-label">問題描述</label>
+                        <textarea class="form-control" id="issue" name="issue" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">儲存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @push('scripts')
 <script>
 function refreshStatus() {
@@ -66,6 +97,19 @@ function refreshStatus() {
 setTimeout(function() {
     refreshStatus();
 }, 60000);
+
+// 處理模態框顯示時的資料傳遞
+document.addEventListener('DOMContentLoaded', function() {
+    var diskReplacementModal = document.getElementById('diskReplacementModal');
+    diskReplacementModal.addEventListener('show.bs.modal', function(event) {
+        var button = event.relatedTarget;
+        var classroomCode = button.getAttribute('data-classroom-code');
+        var classroomCodeInput = document.getElementById('classroom_code_input');
+        classroomCodeInput.value = classroomCode;
+        
+        document.getElementById('diskReplacementModalLabel').textContent = '硬碟更換記錄 - ' + classroomCode;
+    });
+});
 </script>
 @endpush
 @endsection

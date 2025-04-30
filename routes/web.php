@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\DiskReplacementController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -43,3 +44,7 @@ Route::controller(ProfileController::class)
 Route::get('/classroom/refresh', [ClassroomController::class, 'showRefreshForm'])->name('classroom.refresh.form');
 Route::post('/classroom/refresh', [ClassroomController::class, 'refresh'])->name('classroom.refresh');
 Route::get('/classroom/status', [ClassroomController::class, 'status'])->name('classroom.status');
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/disk-replacement', [DiskReplacementController::class, 'store'])->name('disk-replacement.store');
+});
