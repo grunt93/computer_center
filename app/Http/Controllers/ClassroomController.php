@@ -84,26 +84,39 @@ class ClassroomController extends Controller
 
     public function status(Request $request)
     {
-        $building = $request->query('building');
+        $building = $request->query('building', 'A');
         
-        if (!$building || !array_key_exists($building, $this->buildings)) {
+        if (!array_key_exists($building, $this->buildings)) {
             return redirect()->route('classroom.status', ['building' => 'A']);
         }
         
         $classrooms = Classroom::where('code', 'like', $building . '%')
-                              ->orderBy('code')
-                              ->get();
+                          ->orderBy('code')
+                          ->get();
         
+        // 按樓層分組教室
+        $floorClassrooms = [];
+        foreach ($classrooms as $classroom) {
+            $floor = substr($classroom->code, 1, 1);
+            $floorClassrooms[$floor][] = $classroom;
+        }
+        
+        // 查詢忙碌的教室
         $request->merge(['building' => $building]);
         $response = $this->index($request);
         $busyClassrooms = json_decode($response->getContent(), true);
         
-        return view('classroom.status', [
-            'classrooms' => $classrooms,
-            'busyClassrooms' => $busyClassrooms,
-            'buildings' => $this->buildings,
-            'currentBuilding' => $building
-        ]);
+        // 獲取目前學期
+        $currentSemester = Schedule::select('smtr')
+                        ->orderBy('created_at', 'desc')
+                        ->first()->smtr ?? date('Y') . (date('n') >= 8 ? '1' : '2');
+        
+        // 使用 $this->buildings 而非未定義的 $buildings
+        return view('classroom.status', compact(
+            'floorClassrooms',
+            'building',
+            'currentSemester'
+        ))->with('buildings', $this->buildings);
     }
 
     public function showRefreshForm()

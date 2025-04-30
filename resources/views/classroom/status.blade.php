@@ -4,7 +4,10 @@
 <div class="container">
     <div class="card fade-in">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0"><i class="bi bi-display me-2"></i>教室使用狀態</h5>
+            <div>
+                <h5 class="mb-0"><i class="bi bi-display me-2"></i>教室使用狀態</h5>
+                <span class="badge bg-info text-dark">目前學期：{{ $currentSemester }}</span>
+            </div>
             <button class="btn btn-sm btn-primary" onclick="refreshStatus()">
                 <i class="bi bi-arrow-clockwise me-1"></i> 刷新
             </button>
@@ -15,31 +18,12 @@
                 <div class="d-flex flex-wrap gap-2">
                     @foreach($buildings as $code => $name)
                         <a href="{{ route('classroom.status', ['building' => $code]) }}" 
-                           class="btn {{ $currentBuilding == $code ? 'btn-primary' : 'btn-outline-primary' }}">
+                           class="btn {{ $building == $code ? 'btn-primary' : 'btn-outline-primary' }}">
                             {{ $name }} ({{ $code }})
                         </a>
                     @endforeach
                 </div>
             </div>
-
-            @php
-                $floorClassrooms = [];
-                foreach ($classrooms as $classroom) {
-                    if (strlen($classroom->code) >= 2) {
-                        $floor = substr($classroom->code, 1, 1);
-                        if (!isset($floorClassrooms[$floor])) {
-                            $floorClassrooms[$floor] = [];
-                        }
-                        $floorClassrooms[$floor][] = $classroom;
-                    } else {
-                        if (!isset($floorClassrooms['其他'])) {
-                            $floorClassrooms['其他'] = [];
-                        }
-                        $floorClassrooms['其他'][] = $classroom;
-                    }
-                }
-                ksort($floorClassrooms);
-            @endphp
 
             @if(count($floorClassrooms) > 0)
                 @foreach($floorClassrooms as $floor => $floorRooms)
