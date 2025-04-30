@@ -39,11 +39,11 @@ class User extends Authenticatable
 
     /**
      * 取得使用者的所有硬碟更換紀錄
-     * @return HasMany<HardDiskReplacement, User>
+     * @return HasMany<DiskReplacement, User>
      */
     public function hardDiskReplacements(): HasMany
     {
-        return $this->hasMany(HardDiskReplacement::class);
+        return $this->hasMany(DiskReplacement::class);
     }
 
     /**

@@ -7,36 +7,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Classroom extends Model
 {
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<string>
-     */
     protected $fillable = [
-        'name',
         'code',
-        'smtr',
-        'time'
+        'smtr'
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    public function schedules(): HasMany
     {
-        return [
-            'smtr' => 'integer',
-            'time' => 'integer'
-        ];
+        return $this->hasMany(Schedule::class, 'classroom_code', 'code');
     }
 
-    /**
-     * 取得此教室的所有硬碟更換紀錄
-     */
-    public function hardDiskReplacements(): HasMany
+    public function diskReplacements(): HasMany
     {
-        return $this->hasMany(HardDiskReplacement::class);
+        return $this->hasMany(DiskReplacement::class, 'classroom_code', 'code');
     }
 }

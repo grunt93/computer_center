@@ -11,12 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('hard_disk_replacements', function (Blueprint $table) {
+        Schema::create('disk_replacements', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('classroom_id')->constrained('classrooms')->onDelete('cascade');
-            $table->text('issue');
+            $table->string('classroom_code');
+            $table->text('issue')->nullable();
             $table->timestamp('replaced_at')->useCurrent();
+
+            $table->foreign('classroom_code')
+                ->references('code')
+                ->on('classrooms')
+                ->onDelete('cascade');
         });
     }
 
@@ -25,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('hard_disk_replacements');
+        Schema::dropIfExists('disk_replacements');
     }
 };
