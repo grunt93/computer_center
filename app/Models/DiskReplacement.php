@@ -13,7 +13,8 @@ class DiskReplacement extends Model
         'user_id',
         'classroom_code',
         'issue',
-        'replaced_at'
+        'replaced_at',
+        'smtr'
     ];
 
     protected $casts = [

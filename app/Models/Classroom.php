@@ -8,8 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Classroom extends Model
 {
     protected $fillable = [
-        'code',
-        'smtr'
+        'code'
     ];
 
     public function schedules(): HasMany
