@@ -9,7 +9,8 @@ class Schedule extends Model
 {
     protected $fillable = [
         'classroom_code',
-        'time'
+        'time',
+        'smtr'
     ];
 
     public function classroom(): BelongsTo
