@@ -10,15 +10,11 @@ return new class extends Migration
     {
         Schema::create('classrooms', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->unique();  // 加入 unique() 限制
-            $table->integer('smtr');
+            $table->string('code')->unique();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('classrooms');
