@@ -30,8 +30,10 @@
                                 <td>{{ $user->student_id }}</td>
                                 <td>{{ $user->email }}</td>
                                 <td>
-                                    <a href="{{ route('profile.users.show', $user) }}" class="btn btn-sm btn-info">查看</a>
-                                    <a href="{{ route('profile.users.edit', $user) }}" class="btn btn-sm btn-primary">編輯</a>
+                                    @if($user->email !== 'admin')
+                                        <a href="{{ route('profile.users.show', $user) }}" class="btn btn-sm btn-info">查看</a>
+                                        <a href="{{ route('profile.users.edit', $user) }}" class="btn btn-sm btn-primary">編輯</a>
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach
