@@ -20,6 +20,7 @@
                                 <th>姓名</th>
                                 <th>學號</th>
                                 <th>電子郵件</th>
+                                <th>角色</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
@@ -29,6 +30,7 @@
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->student_id }}</td>
                                 <td>{{ $user->email }}</td>
+                                <td>{{ $user->role }}</td>
                                 <td>
                                     @if($user->email !== 'admin')
                                         <a href="{{ route('profile.users.show', $user) }}" class="btn btn-sm btn-info">查看</a>

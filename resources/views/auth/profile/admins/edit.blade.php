@@ -33,6 +33,19 @@
                             @enderror
                         </div>
 
+                        <div class="mb-3">
+                            <label for="role" class="form-label">角色</label>
+                            <select id="role" class="form-control @error('role') is-invalid @enderror" name="role" required>
+                                <option value="staff" {{ old('role', $user->role) === 'staff' ? 'selected' : '' }}>職員</option>
+                                <option value="admin" {{ old('role', $user->role) === 'admin' ? 'selected' : '' }}>管理員</option>
+                            </select>
+                            @error('role')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+
                         <button type="submit" class="btn btn-primary">更新資料</button>
                     </form>
                 </div>

@@ -13,14 +13,18 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
+    // 定義可用的角色
+    const ROLE_ADMIN = 'admin';
+    const ROLE_STAFF = 'staff';
+    
     protected $fillable = [
         'name',
-        'student_id',
         'email',
         'password',
+        'student_id',
         'role'
     ];
-
+    
     protected $hidden = [
         'password',
         'remember_token',

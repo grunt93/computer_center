@@ -142,20 +142,25 @@ class ProfileController extends Controller
     // 在 updateUser 方法中加入檢查
     public function updateUser(Request $request, User $user)
     {
-        if ($user->role === 'admin') {
-            abort(403, '無法修改管理員資料');
+        if ($user->email === 'admin') {
+            abort(403, '無法修改admin管理員資料');
         }
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'student_id' => ['required', 'string', 'max:255']
+            'student_id' => ['required', 'string', 'max:255'],
+            'role' => ['required', 'string', 'in:staff,admin']  
         ], [
             'name.required' => '請輸入姓名',
             'name.max' => '姓名不能超過 255 個字元',
             'student_id.required' => '請輸入學號',
             'student_id.max' => '學號不能超過 255 個字元',
+            'role.required' => '請選擇角色',
+            'role.in' => '無效的角色選擇'
         ]);
 
+        $validated['role'] = strval($validated['role']);
+        
         $user->update($validated);
 
         return redirect()->route('profile.users.show', $user)
