@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\ProfileController;
+use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\HomeController;
 
 Route::get('/', function () {
@@ -38,3 +39,6 @@ Route::controller(ProfileController::class)
             Route::delete('/users/{user}', 'deleteUser')->name('users.delete');
         });
     });
+
+Route::get('/classroom/refresh', [ClassroomController::class, 'showRefreshForm'])->name('classroom.refresh.form');
+Route::post('/classroom/refresh', [ClassroomController::class, 'refresh'])->name('classroom.refresh');
