@@ -28,13 +28,16 @@ class DiskReplacementController extends Controller
         // 如果找不到學期資訊，使用當前學年學期
         $smtr = $latestSchedule ? $latestSchedule->smtr : date('Y') . (date('n') >= 8 ? '1' : '2');
 
+        // 確保 disk_replaced 被明確轉換為布林值
+        $diskReplaced = $request->has('disk_replaced') ? true : false;
+
         DiskReplacement::create([
             'user_id' => Auth::id(),
             'classroom_code' => $request->classroom_code,
             'issue' => $request->issue,
             'replaced_at' => now(),
             'smtr' => $smtr,
-            'disk_replaced' => $request->has('disk_replaced')
+            'disk_replaced' => $diskReplaced
         ]);
 
         return redirect()->back()->with('success', '硬碟更換記錄已儲存');
