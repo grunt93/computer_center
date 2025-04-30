@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\DiskReplacement;
-use App\Models\Classroom;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,16 +16,12 @@ class DiskReplacementController extends Controller
             'issue' => 'nullable|string',
         ]);
 
-        // 獲取該教室最新的學期資訊
         $latestSchedule = Schedule::where('classroom_code', $request->classroom_code)
                                 ->orderBy('smtr', 'desc')
                                 ->first();
                                 
-        // 如果找不到學期資訊，使用當前學年學期
         $smtr = $latestSchedule ? $latestSchedule->smtr : date('Y') . (date('n') >= 8 ? '1' : '2');
-
-        // 確保 disk_replaced 被明確轉換為布林值
-        $diskReplaced = $request->has('disk_replaced') ? true : false;
+        $diskReplaced = $request->has('disk_replaced');
 
         DiskReplacement::create([
             'user_id' => Auth::id(),
