@@ -28,6 +28,13 @@ class DiskReplacementController extends Controller
             $query->where('classroom_code', 'like', $request->classroom_code . '%');
         }
         
+        // 新增用戶名稱查詢
+        if ($request->filled('user_name')) {
+            $query->whereHas('user', function($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->user_name . '%');
+            });
+        }
+        
         // 新增日期篩選
         if ($request->filled('start_date')) {
             $query->whereDate('replaced_at', '>=', $request->start_date);
