@@ -41,10 +41,20 @@ Route::controller(ProfileController::class)
         });
     });
 
-Route::get('/classroom/refresh', [ClassroomController::class, 'showRefreshForm'])->name('classroom.refresh.form');
-Route::post('/classroom/refresh', [ClassroomController::class, 'refresh'])->name('classroom.refresh');
-Route::get('/classroom/status', [ClassroomController::class, 'status'])->name('classroom.status');
+Route::controller(ClassroomController::class)
+    ->middleware(['auth'])
+    ->prefix('classroom')
+    ->name('classroom.')
+    ->group(function(){
+        Route::get('/classroom/refresh', 'showRefreshForm')->name('refresh.form');
+        Route::post('/classroom/refresh', 'refresh')->name('refresh');
+        Route::get('/classroom/status', 'status')->name('status');
+    });
 
-Route::middleware(['auth'])->group(function () {
-    Route::post('/disk-replacement', [DiskReplacementController::class, 'store'])->name('disk-replacement.store');
-});
+Route::controller(DiskReplacementController::class)
+    ->middleware(['auth'])
+    ->prefix('disk-replacement')
+    ->name('disk-replacement.')
+    ->group(function(){
+        Route::post('/disk-replacement', 'store')->name('store');
+    });
