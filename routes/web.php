@@ -19,19 +19,22 @@ Route::controller(ProfileController::class)
     ->prefix('profile')
     ->name('profile.')
     ->group(function () {
-        // 顯示個人資料
+        // 一般用戶路由
         Route::get('/', 'show')->name('show');
-        
-        // 編輯個人資料
         Route::get('/edit', 'edit')->name('edit');
         Route::put('/', 'update')->name('update');
-        
-        // 更新電子郵件
         Route::put('/email', 'updateEmail')->name('email.update');
-        
-        // 更新密碼
         Route::put('/password', 'updatePassword')->name('password.update');
-        
-        // 刪除帳號
         Route::delete('/', 'deleteAccount')->name('delete');
+
+        // 管理員路由
+        Route::middleware(['admin'])->group(function () {
+            Route::get('/users', 'index')->name('users.index');
+            Route::get('/users/{user}', 'showUser')->name('users.show');
+            Route::get('/users/{user}/edit', 'editUser')->name('users.edit');
+            Route::put('/users/{user}', 'updateUser')->name('users.update');
+            Route::put('/users/{user}/email', 'updateUserEmail')->name('users.email.update');
+            Route::put('/users/{user}/password', 'updateUserPassword')->name('users.password.update');
+            Route::delete('/users/{user}', 'deleteUser')->name('users.delete');
+        });
     });
