@@ -14,11 +14,13 @@ class DiskReplacement extends Model
         'classroom_code',
         'issue',
         'replaced_at',
-        'smtr'
+        'smtr',
+        'disk_replaced'
     ];
 
     protected $casts = [
-        'replaced_at' => 'datetime'
+        'replaced_at' => 'datetime',
+        'disk_replaced' => 'boolean'
     ];
 
     public function user(): BelongsTo

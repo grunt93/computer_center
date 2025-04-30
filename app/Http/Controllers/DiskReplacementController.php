@@ -34,6 +34,7 @@ class DiskReplacementController extends Controller
             'issue' => $request->issue,
             'replaced_at' => now(),
             'smtr' => $smtr,
+            'disk_replaced' => $request->has('disk_replaced')
         ]);
 
         return redirect()->back()->with('success', '硬碟更換記錄已儲存');

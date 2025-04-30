@@ -77,6 +77,11 @@
                         <label for="issue" class="form-label">問題描述</label>
                         <textarea class="form-control" id="issue" name="issue" rows="3" required></textarea>
                     </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="disk_replaced" name="disk_replaced" checked>
+                        <label class="form-check-label" for="disk_replaced">已更換硬碟</label>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
