@@ -34,7 +34,7 @@
                         <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-2 mt-2">
                             @foreach($floorRooms as $classroom)
                                 @php
-                                    $isFree = !isset($busyClassrooms[$classroom->code]);
+                                    $isFree = empty($busyClassrooms[$classroom->code]);
                                 @endphp
                                 <div class="col">
                                     <button 

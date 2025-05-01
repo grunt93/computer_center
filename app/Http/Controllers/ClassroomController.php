@@ -94,27 +94,24 @@ class ClassroomController extends Controller
                           ->orderBy('code')
                           ->get();
         
-        // 按樓層分組教室
         $floorClassrooms = [];
         foreach ($classrooms as $classroom) {
             $floor = substr($classroom->code, 1, 1);
             $floorClassrooms[$floor][] = $classroom;
         }
         
-        // 查詢忙碌的教室
         $request->merge(['building' => $building]);
         $response = $this->index($request);
         $busyClassrooms = json_decode($response->getContent(), true);
         
-        // 獲取目前學期
         $currentSemester = Schedule::select('smtr')
                         ->orderBy('created_at', 'desc')
                         ->first()->smtr ?? date('Y') . (date('n') >= 8 ? '1' : '2');
         
-        // 使用 $this->buildings 而非未定義的 $buildings
         return view('classroom.status', compact(
             'floorClassrooms',
             'building',
+            'busyClassrooms', 
             'currentSemester'
         ))->with('buildings', $this->buildings);
     }
