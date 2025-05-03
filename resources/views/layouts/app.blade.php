@@ -196,11 +196,11 @@
                                 <a class="nav-link" href="{{ route('disk-replacement.index') }}"><i
                                         class="bi bi-hdd me-1"></i> 硬碟更換記錄</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url('https://cnc.uch.edu.tw/p/404-1002-577.php?Lang=zh-tw') }}"
-                                    target="_blank" rel="noopener noreferrer"><i class="bi bi-telephone me-1"></i> 分機聯絡表</a>
-                            </li>
                         @endauth
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url('https://cnc.uch.edu.tw/p/404-1002-577.php?Lang=zh-tw') }}"
+                                target="_blank" rel="noopener noreferrer"><i class="bi bi-telephone me-1"></i> 分機聯絡表</a>
+                        </li>
                     </ul>
 
                     <ul class="navbar-nav ms-auto">
@@ -239,7 +239,7 @@
                                     @endif
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                                            document.getElementById('logout-form').submit();">
+                                                                document.getElementById('logout-form').submit();">
                                         <i class="bi bi-box-arrow-right me-2"></i> 登出
                                     </a>
 
