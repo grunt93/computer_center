@@ -188,6 +188,9 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('disk-replacement.index') }}"><i class="bi bi-hdd me-1"></i> 硬碟更換記錄</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url('https://cnc.uch.edu.tw/p/404-1002-577.php?Lang=zh-tw') }}"><i class="bi bi-telephone me-1"></i> 分機聯絡表</a>
+                        </li>
                         @endauth
                     </ul>
 
