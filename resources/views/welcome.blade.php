@@ -112,10 +112,8 @@
     <section class="hero-section">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-lg-7 mb-4 mb-lg-0 animate__animated animate__fadeInLeft">
-                    <h1 class="fw-bold display-4 mb-3">健行科技大學電算中心管理系統</h1>
-                    <p class="lead mb-4">專為電算中心人員設計的綜合管理平台，提供教室狀態監控、硬碟更換記錄及課表管理等功能。</p>
-                </div>
+                <h1 class="fw-bold display-4 mb-3">健行科技大學電算中心管理系統</h1>
+                <p class="lead mb-4">專為電算中心人員設計的綜合管理平台，提供教室狀態監控、硬碟更換記錄及課表管理等功能。</p>
             </div>
         </div>
     </section>
@@ -260,34 +258,34 @@
 
 @push('scripts')
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             var fadeElements = $('.animate-fade-up');
-            
-            var observer = new IntersectionObserver(function(entries) {
-                $.each(entries, function(i, entry) {
+
+            var observer = new IntersectionObserver(function (entries) {
+                $.each(entries, function (i, entry) {
                     if (entry.isIntersecting) {
                         $(entry.target).addClass('show');
                         observer.unobserve(entry.target);
                     }
                 });
             }, { threshold: 0.1 });
-            
-            fadeElements.each(function() {
+
+            fadeElements.each(function () {
                 observer.observe(this);
             });
-            
+
             $('[data-bs-toggle="tooltip"]').tooltip();
-            
+
             function animateValue(id, start, end, duration) {
                 var obj = $('#' + id);
                 if (obj.length === 0) return;
-                
+
                 var startTimestamp = null;
-                var step = function(timestamp) {
+                var step = function (timestamp) {
                     if (!startTimestamp) startTimestamp = timestamp;
                     var progress = Math.min((timestamp - startTimestamp) / duration, 1);
                     var value = Math.floor(progress * (end - start) + start);
-                    
+
                     if (id === 'stat-uptime') {
                         obj.html(value.toFixed(1) + '%');
                     } else if (value > 99) {
@@ -295,17 +293,17 @@
                     } else {
                         obj.html(value);
                     }
-                    
+
                     if (progress < 1) {
                         window.requestAnimationFrame(step);
                     }
                 };
                 window.requestAnimationFrame(step);
             }
-            
-            var statObserver = new IntersectionObserver(function(entries) {
+
+            var statObserver = new IntersectionObserver(function (entries) {
                 if (entries[0].isIntersecting) {
-                    setTimeout(function() {
+                    setTimeout(function () {
                         animateValue('stat-buildings', 0, 5, 1000);
                         animateValue('stat-classrooms', 0, 40, 1000);
                         animateValue('stat-computers', 0, 800, 1500);
@@ -314,7 +312,7 @@
                     statObserver.disconnect();
                 }
             });
-            
+
             var statsSection = $('.stat-card');
             if (statsSection.length > 0) {
                 statObserver.observe(statsSection[0]);
