@@ -10,6 +10,8 @@ class ClassroomsTableSeeder extends Seeder
     public function run(): void
     {
         $classrooms = [
+            ['code' => 'A220'],
+            ['code' => 'A221'],
             ['code' => 'A301'],
             ['code' => 'A302'],
             ['code' => 'A303'],
@@ -22,6 +24,7 @@ class ClassroomsTableSeeder extends Seeder
             ['code' => 'A314'],
             ['code' => 'A315'],
             ['code' => 'A316'],
+            ['code' => 'A319'],
             ['code' => 'A521'],
             ['code' => 'A522'],
             ['code' => 'A525'],
