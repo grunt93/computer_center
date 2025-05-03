@@ -11,24 +11,24 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    
+
     <style>
         body {
             font-family: 'Noto Sans TC', sans-serif;
             background-color: #f8f9fa;
             color: #212529;
         }
-        
+
         .navbar {
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
             background-color: #ffffff;
         }
-        
+
         .navbar-brand {
             font-weight: 600;
             color: #0d6efd;
         }
-        
+
         .card {
             border: none;
             border-radius: 0.5rem;
@@ -37,12 +37,12 @@
             overflow: hidden;
             margin-bottom: 1.5rem;
         }
-        
+
         .card:hover {
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
             transform: translateY(-2px);
         }
-        
+
         .card-header {
             background-color: #fff;
             border-bottom: 1px solid rgba(0, 0, 0, 0.125);
@@ -50,62 +50,62 @@
             display: flex;
             align-items: center;
         }
-        
+
         .btn {
             border-radius: 0.25rem;
             font-weight: 500;
             padding: 0.375rem 1rem;
             transition: all 0.2s;
         }
-        
+
         .btn-primary {
             background-color: #0d6efd;
             border-color: #0d6efd;
         }
-        
+
         .btn-primary:hover {
             background-color: #0b5ed7;
             border-color: #0a58ca;
         }
-        
+
         .table-hover tbody tr:hover {
             background-color: rgba(13, 110, 253, 0.05);
         }
-        
+
         .alert {
             border: none;
             border-radius: 0.5rem;
         }
-        
+
         .dropdown-menu {
             border: none;
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
             border-radius: 0.5rem;
         }
-        
+
         .dropdown-item {
             padding: 0.5rem 1rem;
             transition: all 0.2s;
         }
-        
+
         .dropdown-item:hover {
             background-color: rgba(13, 110, 253, 0.1);
         }
-        
+
         .form-control {
             border-radius: 0.375rem;
         }
-        
+
         .form-control:focus {
             box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
         }
-        
+
         .nav-link {
             color: #495057;
             font-weight: 500;
             padding: 0.5rem 1rem;
         }
-        
+
         .nav-link:hover {
             color: #0d6efd;
         }
@@ -113,16 +113,21 @@
         .fade-in {
             animation: fadeIn 0.5s;
         }
-        
+
         @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
         }
-        
+
         .input-password-wrapper {
             position: relative;
         }
-        
+
         .password-toggle-icon {
             cursor: pointer;
             position: absolute;
@@ -131,21 +136,21 @@
             transform: translateY(-50%);
             z-index: 10;
         }
-        
+
         .badge {
             font-weight: 500;
             padding: 0.35em 0.65em;
         }
-        
+
         .pagination {
             margin-bottom: 0;
         }
-        
+
         .page-link {
             color: #0d6efd;
             border: 1px solid #dee2e6;
         }
-        
+
         .page-item.active .page-link {
             background-color: #0d6efd;
             border-color: #0d6efd;
@@ -175,22 +180,26 @@
                             <a class="nav-link" href="{{ route('home') }}"><i class="bi bi-house-door me-1"></i> 首頁</a>
                         </li>
                         @auth
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('classroom.status') }}"><i class="bi bi-display me-1"></i> 教室狀態</a>
-                        </li>
-                        @auth
-                            @if(Auth::user()->role === 'admin')
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('classroom.refresh.form') }}"><i class="bi bi-arrow-clockwise me-1"></i> 課表更新</a>
-                                </li>
-                            @endif
-                        @endauth
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('disk-replacement.index') }}"><i class="bi bi-hdd me-1"></i> 硬碟更換記錄</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url('https://cnc.uch.edu.tw/p/404-1002-577.php?Lang=zh-tw') }}"><i class="bi bi-telephone me-1"></i> 分機聯絡表</a>
-                        </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('classroom.status') }}"><i
+                                        class="bi bi-display me-1"></i> 教室狀態</a>
+                            </li>
+                            @auth
+                                @if(Auth::user()->role === 'admin')
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ route('classroom.refresh.form') }}"><i
+                                                class="bi bi-arrow-clockwise me-1"></i> 課表更新</a>
+                                    </li>
+                                @endif
+                            @endauth
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('disk-replacement.index') }}"><i
+                                        class="bi bi-hdd me-1"></i> 硬碟更換記錄</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url('https://cnc.uch.edu.tw/p/404-1002-577.php?Lang=zh-tw') }}"
+                                    target="_blank" rel="noopener noreferrer"><i class="bi bi-telephone me-1"></i> 分機聯絡表</a>
+                            </li>
                         @endauth
                     </ul>
 
@@ -198,13 +207,15 @@
                         @guest
                             @if (Route::has('login'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}"><i class="bi bi-box-arrow-in-right me-1"></i> 登入</a>
+                                    <a class="nav-link" href="{{ route('login') }}"><i
+                                            class="bi bi-box-arrow-in-right me-1"></i> 登入</a>
                                 </li>
                             @endif
 
                             @if (Route::has('register'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}"><i class="bi bi-person-plus me-1"></i> 註冊</a>
+                                    <a class="nav-link" href="{{ route('register') }}"><i class="bi bi-person-plus me-1"></i>
+                                        註冊</a>
                                 </li>
                             @endif
                         @else
@@ -214,7 +225,8 @@
                                     <i class="bi bi-person-circle me-1"></i> {{ Auth::user()->name }}
                                 </a>
 
-                                <div class="dropdown-menu dropdown-menu-end animate__animated animate__fadeIn" aria-labelledby="navbarDropdown">
+                                <div class="dropdown-menu dropdown-menu-end animate__animated animate__fadeIn"
+                                    aria-labelledby="navbarDropdown">
                                     @if(Auth::user()->email !== 'admin')
                                         <a class="dropdown-item" href="{{ route('profile.show') }}">
                                             <i class="bi bi-person me-2"></i> 個人資料
@@ -227,7 +239,7 @@
                                     @endif
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                                        document.getElementById('logout-form').submit();">
+                                                            document.getElementById('logout-form').submit();">
                                         <i class="bi bi-box-arrow-right me-2"></i> 登出
                                     </a>
 
@@ -245,20 +257,22 @@
         <main class="py-4">
             <div class="container mb-4">
                 @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show animate__animated animate__fadeIn" role="alert">
+                    <div class="alert alert-success alert-dismissible fade show animate__animated animate__fadeIn"
+                        role="alert">
                         <i class="bi bi-check-circle-fill me-2"></i> {{ session('success') }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
-                
+
                 @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show animate__animated animate__fadeIn" role="alert">
+                    <div class="alert alert-danger alert-dismissible fade show animate__animated animate__fadeIn"
+                        role="alert">
                         <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ session('error') }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 @endif
             </div>
-            
+
             @yield('content')
         </main>
     </div>
@@ -267,15 +281,15 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             function initPasswordToggleIcons() {
-                $('.password-toggle-icon').each(function() {
+                $('.password-toggle-icon').each(function () {
                     if (!$(this).attr('data-initialized')) {
                         $(this).attr('data-initialized', 'true');
-                        $(this).on('click', function() {
+                        $(this).on('click', function () {
                             var targetId = $(this).attr('data-target');
                             var passwordInput = $('#' + targetId);
-                            
+
                             if (passwordInput.attr('type') === 'password') {
                                 passwordInput.attr('type', 'text');
                                 $(this).removeClass('bi-eye').addClass('bi-eye-slash');
@@ -287,20 +301,20 @@
                     }
                 });
             }
-            
+
             initPasswordToggleIcons();
-            
-            $(document).on('shown.bs.modal', function() {
-                setTimeout(function() {
+
+            $(document).on('shown.bs.modal', function () {
+                setTimeout(function () {
                     initPasswordToggleIcons();
                 }, 100);
             });
-            
-            $('input[id="student_id"]').on('input', function() {
+
+            $('input[id="student_id"]').on('input', function () {
                 $(this).val($(this).val().toUpperCase());
             });
-            
-            $('form').on('submit', function() {
+
+            $('form').on('submit', function () {
                 var studentIdInput = $(this).find('#student_id');
                 if (studentIdInput.length) {
                     studentIdInput.val(studentIdInput.val().toUpperCase());
