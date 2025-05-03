@@ -4,26 +4,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
     <title>{{ config('app.name', 'Laravel') }}</title>
-
-    <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-
-    <!-- 引入 Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- 引入 Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-    
-    <!-- 引入 Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     
-    <!-- 自定義 CSS -->
     <style>
         body {
             font-family: 'Noto Sans TC', sans-serif;
@@ -122,7 +110,6 @@
             color: #0d6efd;
         }
 
-        /* 動畫效果 */
         .fade-in {
             animation: fadeIn 0.5s;
         }
@@ -132,7 +119,6 @@
             100% { opacity: 1; }
         }
         
-        /* 表單元素 */
         .input-password-wrapper {
             position: relative;
         }
@@ -146,13 +132,11 @@
             z-index: 10;
         }
         
-        /* 標籤樣式 */
         .badge {
             font-weight: 500;
             padding: 0.35em 0.65em;
         }
         
-        /* 分頁樣式 */
         .pagination {
             margin-bottom: 0;
         }
@@ -186,7 +170,6 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- 左邊選單 -->
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('home') }}"><i class="bi bi-house-door me-1"></i> 首頁</a>
@@ -208,9 +191,7 @@
                         @endauth
                     </ul>
 
-                    <!-- 右邊選單 -->
                     <ul class="navbar-nav ms-auto">
-                        <!-- 用戶相關 -->
                         @guest
                             @if (Route::has('login'))
                                 <li class="nav-item">
@@ -279,65 +260,48 @@
         </main>
     </div>
 
-    <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // 密碼顯示/隱藏功能
-        document.addEventListener('DOMContentLoaded', function() {
-            // 為現有的密碼圖標綁定事件
+        $(document).ready(function() {
             function initPasswordToggleIcons() {
-                const passwordIcons = document.querySelectorAll('.password-toggle-icon');
-                passwordIcons.forEach(icon => {
-                    // 避免重複綁定事件
-                    if (!icon.hasAttribute('data-initialized')) {
-                        icon.setAttribute('data-initialized', 'true');
-                        icon.addEventListener('click', function() {
-                            const targetId = this.getAttribute('data-target');
-                            const passwordInput = document.getElementById(targetId);
+                $('.password-toggle-icon').each(function() {
+                    if (!$(this).attr('data-initialized')) {
+                        $(this).attr('data-initialized', 'true');
+                        $(this).on('click', function() {
+                            var targetId = $(this).attr('data-target');
+                            var passwordInput = $('#' + targetId);
                             
-                            if (passwordInput.type === 'password') {
-                                passwordInput.type = 'text';
-                                this.classList.remove('bi-eye');
-                                this.classList.add('bi-eye-slash');
+                            if (passwordInput.attr('type') === 'password') {
+                                passwordInput.attr('type', 'text');
+                                $(this).removeClass('bi-eye').addClass('bi-eye-slash');
                             } else {
-                                passwordInput.type = 'password';
-                                this.classList.remove('bi-eye-slash');
-                                this.classList.add('bi-eye');
+                                passwordInput.attr('type', 'password');
+                                $(this).removeClass('bi-eye-slash').addClass('bi-eye');
                             }
                         });
                     }
                 });
             }
             
-            // 初始頁面加載時綁定事件
             initPasswordToggleIcons();
             
-            // 監聽模態框顯示事件，在模態框顯示時重新綁定事件
-            document.addEventListener('shown.bs.modal', function() {
+            $(document).on('shown.bs.modal', function() {
                 setTimeout(function() {
                     initPasswordToggleIcons();
                 }, 100);
             });
             
-            // 自動將學號轉為大寫
-            const studentIdInputs = document.querySelectorAll('input[id="student_id"]');
-            studentIdInputs.forEach(input => {
-                input.addEventListener('input', function() {
-                    this.value = this.value.toUpperCase();
-                });
+            $('input[id="student_id"]').on('input', function() {
+                $(this).val($(this).val().toUpperCase());
             });
             
-            // 表單提交時確保學號為大寫
-            const forms = document.querySelectorAll('form');
-            forms.forEach(form => {
-                form.addEventListener('submit', function() {
-                    const studentIdInput = this.querySelector('#student_id');
-                    if (studentIdInput) {
-                        studentIdInput.value = studentIdInput.value.toUpperCase();
-                    }
-                });
+            $('form').on('submit', function() {
+                var studentIdInput = $(this).find('#student_id');
+                if (studentIdInput.length) {
+                    studentIdInput.val(studentIdInput.val().toUpperCase());
+                }
             });
         });
     </script>
