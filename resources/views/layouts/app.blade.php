@@ -176,10 +176,10 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('home') }}"><i class="bi bi-house-door me-1"></i> 首頁</a>
-                        </li>
                         @auth
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('home') }}"><i class="bi bi-house-door me-1"></i> 儀錶板</a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('classroom.status') }}"><i
                                         class="bi bi-display me-1"></i> 教室狀態</a>
@@ -198,7 +198,8 @@
                             </li>
                         @endauth
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('classroom.open') }}"><i class="bi bi-door-open me-1"></i>教室開門</a>
+                            <a class="nav-link" href="{{ route('classroom.open') }}"><i
+                                    class="bi bi-door-open me-1"></i>教室開門</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url('https://cnc.uch.edu.tw/p/404-1002-577.php?Lang=zh-tw') }}"
@@ -242,7 +243,7 @@
                                     @endif
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                                                document.getElementById('logout-form').submit();">
+                                                                    document.getElementById('logout-form').submit();">
                                         <i class="bi bi-box-arrow-right me-2"></i> 登出
                                     </a>
 
