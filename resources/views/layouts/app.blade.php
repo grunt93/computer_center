@@ -165,7 +165,7 @@
         <nav class="navbar navbar-expand-md navbar-light shadow-sm">
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
-                    <i class="bi bi-pc-display-horizontal me-2"></i>
+                    <img src="{{ asset('image/Logo.png') }}" alt="學校標誌" height="30" class="me-2">
                     {{ config('app.name', 'Laravel') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
