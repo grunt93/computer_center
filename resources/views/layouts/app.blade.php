@@ -157,6 +157,64 @@
             background-color: #0d6efd;
             border-color: #0d6efd;
         }
+
+        /* 漢堡按鈕動畫 */
+        .navbar-toggler {
+            border: none;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            position: relative;
+            transition: all 0.3s;
+            outline: none !important;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+
+        .navbar-toggler-icon {
+            background-image: none !important;
+            position: relative;
+            transition: all 0.3s;
+            display: block;
+            height: 2px;
+            width: 100%;
+            background-color: #0d6efd;
+            margin: 5px 0;
+        }
+
+        .navbar-toggler-icon::before,
+        .navbar-toggler-icon::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            height: 2px;
+            width: 100%;
+            background-color: #0d6efd;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-toggler-icon::before {
+            top: -8px;
+        }
+
+        .navbar-toggler-icon::after {
+            top: 8px;
+        }
+
+        /* 展開時的動畫 */
+        .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+            background-color: transparent;
+        }
+
+        .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::before {
+            transform: translateY(8px) rotate(45deg);
+        }
+
+        .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::after {
+            transform: translateY(-8px) rotate(-45deg);
+        }
     </style>
 
     @stack('styles')
@@ -325,6 +383,13 @@
                 if (studentIdInput.length) {
                     studentIdInput.val(studentIdInput.val().toUpperCase());
                 }
+            });
+
+            // 漢堡按鈕動畫效果
+            $('.navbar-toggler').on('click', function() {
+                // 按鈕切換動畫是透過 aria-expanded 屬性來控制
+                // Bootstrap 會自動切換這個屬性
+                $(this).toggleClass('is-active');
             });
         });
     </script>
