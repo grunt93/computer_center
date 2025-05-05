@@ -79,7 +79,7 @@
     <div class="card fade-in">
         <div class="card-header d-flex justify-content-between align-items-center">
             <div>
-                <h5 class="mb-0"><i class="bi bi-door-open me-2"></i>特殊教室開門時間</h5>
+                <h5 class="mb-0"><i class="bi bi-door-open me-2"></i>教室開門時間</h5>
                 <span class="badge bg-info text-dark">目前學期：{{ $currentSemester }}</span>
             </div>
             <button class="btn btn-sm btn-primary" onclick="refreshPage()">
@@ -176,7 +176,7 @@
             @else
                 <div class="alert alert-warning">
                     <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    目前沒有特殊教室的資料，請確認是否已正確設置特殊教室。
+                    目前沒有220, 221, 319教室的資料，請確認是否已正確設置教室。
                 </div>
             @endif
         </div>

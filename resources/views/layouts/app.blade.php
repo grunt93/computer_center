@@ -198,7 +198,7 @@
                             </li>
                         @endauth
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('classroom.open') }}"><i class="bi bi-house-door me-1"></i>教室開門</a>
+                            <a class="nav-link" href="{{ route('classroom.open') }}"><i class="bi bi-door-open me-1"></i>教室開門</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{{ url('https://cnc.uch.edu.tw/p/404-1002-577.php?Lang=zh-tw') }}"
