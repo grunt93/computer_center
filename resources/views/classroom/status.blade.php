@@ -101,23 +101,21 @@
 
 @push('scripts')
 <script>
-    function refreshStatus() {
-        location.reload();
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        var diskReplacementModal = document.getElementById('diskReplacementModal');
-        if (diskReplacementModal) {
-            diskReplacementModal.addEventListener('show.bs.modal', function(event) {
-                var button = event.relatedTarget;
-                var classroomCode = button.getAttribute('data-classroom-code');
-                var classroomName = button.getAttribute('data-classroom-name');
-                
-                document.getElementById('classroomCode').textContent = classroomCode;
-                document.getElementById('classroomName').textContent = classroomName;
-                document.getElementById('classroom_code_input').value = classroomCode;
-            });
-        }
+    $(document).ready(function() {
+        // 初始化模態框事件
+        $('#diskReplacementModal').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var classroomCode = button.data('classroom-code');
+            var classroomName = button.data('classroom-name');
+            
+            $('#classroomCode').text(classroomCode);
+            $('#classroomName').text(classroomName);
+            $('#classroom_code_input').val(classroomCode);
+        });
+        
+        window.refreshStatus = function() {
+            location.reload();
+        };
     });
 </script>
 @endpush

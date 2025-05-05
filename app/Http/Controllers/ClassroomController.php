@@ -160,4 +160,81 @@ class ClassroomController extends Controller
             return redirect()->back()->with('error', '課表更新失敗：' . $e->getMessage());
         }
     }
+
+    public function open()
+    {
+        // 只獲取指定的三間特殊教室
+        $classrooms = Classroom::whereIn('code', ['A220', 'A221', 'A319'])
+                       ->orderBy('code')
+                       ->get();
+        
+        // 獲取當前時間，判斷使用狀態
+        $now = now()->setTimezone('Asia/Taipei');
+        $weekday = $now->dayOfWeek;
+        $hour = (int)$now->format('H');
+        $minute = (int)$now->format('i');
+        
+        // 獲取當前學期
+        $currentSemester = Schedule::select('smtr')
+                        ->orderBy('created_at', 'desc')
+                        ->first()->smtr ?? date('Y') . (date('n') >= 8 ? '1' : '2');
+        
+        // 每個時段的課程節次
+        $morningPeriods = [1, 2, 3, 4];      // 上午節次
+        $afternoonPeriods = [5, 6, 7, 8, 9, 10]; // 下午節次
+        $eveningPeriods = [11, 12, 13, 14];  // 晚上節次
+        
+        // 判斷當前時間屬於哪個時段
+        $currentTimeSlot = '';
+        if (($hour >= 7 && $minute >= 30) && ($hour < 11 || ($hour == 11 && $minute <= 30))) {
+            $currentTimeSlot = 'morning';
+        } elseif (($hour >= 11 && $minute > 30) && $hour < 18) {
+            $currentTimeSlot = 'afternoon';
+        } elseif ($hour >= 18 && ($hour < 21 || ($hour == 21 && $minute <= 40))) {
+            $currentTimeSlot = 'evening';
+        }
+        
+        // 獲取每間教室的各時段課程狀態
+        $classroomSchedules = [];
+        
+        foreach ($classrooms as $classroom) {
+            $roomCode = $classroom->code;
+            
+            // 獲取該教室今日的所有課程
+            $todaySchedules = Schedule::where('classroom_code', $roomCode)
+                                     ->where('smtr', $currentSemester)
+                                     ->where('time', '>=', $weekday * 100)
+                                     ->where('time', '<', ($weekday + 1) * 100)
+                                     ->get();
+            
+            // 初始化該教室各時段課程狀態
+            $classroomSchedules[$roomCode] = [
+                'morning' => false,
+                'afternoon' => false,
+                'evening' => false
+            ];
+            
+            // 檢查是否有課程
+            foreach ($todaySchedules as $schedule) {
+                $period = $schedule->time % 100;
+                
+                // 根據節次判斷屬於哪個時段
+                if (in_array($period, $morningPeriods)) {
+                    $classroomSchedules[$roomCode]['morning'] = true;
+                } elseif (in_array($period, $afternoonPeriods)) {
+                    $classroomSchedules[$roomCode]['afternoon'] = true;
+                } elseif (in_array($period, $eveningPeriods)) {
+                    $classroomSchedules[$roomCode]['evening'] = true;
+                }
+            }
+        }
+        
+        // 返回視圖
+        return view('classroom.open', compact(
+            'classrooms',
+            'classroomSchedules',
+            'currentTimeSlot',
+            'currentSemester'
+        ));
+    }
 }

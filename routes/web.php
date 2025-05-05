@@ -42,13 +42,16 @@ Route::controller(ProfileController::class)
     });
 
 Route::controller(ClassroomController::class)
-    ->middleware(['auth'])
     ->prefix('classroom')
     ->name('classroom.')
     ->group(function(){
-        Route::get('/classroom/refresh', 'showRefreshForm')->name('refresh.form');
-        Route::post('/classroom/refresh', 'refresh')->name('refresh');
-        Route::get('/classroom/status', 'status')->name('status');
+        Route::middleware(['auth'])->group(function(){
+            Route::get('/refresh', 'showRefreshForm')->name('refresh.form');
+            Route::post('/refresh', 'refresh')->name('refresh');
+            Route::get('/status', 'status')->name('status');
+        });
+        
+        Route::get('/open', 'open')->name('open');
     });
 
 Route::controller(DiskReplacementController::class)

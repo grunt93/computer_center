@@ -198,6 +198,9 @@
                             </li>
                         @endauth
                         <li class="nav-item">
+                            <a class="nav-link" href="{{ route('classroom.open') }}"><i class="bi bi-house-door me-1"></i>教室開門</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ url('https://cnc.uch.edu.tw/p/404-1002-577.php?Lang=zh-tw') }}"
                                 target="_blank" rel="noopener noreferrer"><i class="bi bi-telephone me-1"></i> 分機聯絡表</a>
                         </li>
