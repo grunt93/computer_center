@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', '發送重設連結')
+
 @push('styles')
 <style>
     .reset-card {

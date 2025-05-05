@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', '教室使用狀態')
+
 @section('content')
 <div class="container">
     <div class="card fade-in">

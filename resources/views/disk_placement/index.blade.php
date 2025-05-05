@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', '硬碟更換記錄')
+
 @push('styles')
 <style>
     .filter-card {

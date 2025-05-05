@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', '教室開門時間')
+
 @push('styles')
 <style>
     .classroom-title {

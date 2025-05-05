@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', '重設密碼')
+
 @push('styles')
 <style>
     .reset-card {

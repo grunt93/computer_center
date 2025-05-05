@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', '個人資料')
+
 @push('styles')
 <style>
     .profile-card {

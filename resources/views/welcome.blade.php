@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', '首頁')
+
 @push('styles')
     <style>
         .hero-section {
