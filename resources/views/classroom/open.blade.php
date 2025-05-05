@@ -6,11 +6,6 @@
         font-size: 1.25rem;
         font-weight: 500;
     }
-
-    .classroom-description {
-        font-size: 0.875rem;
-        color: #6c757d;
-    }
     
     .alert {
         border-left: 4px solid;
@@ -24,10 +19,6 @@
         border-left-color: #dc3545;
     }
     
-    .alert-warning {
-        border-left-color: #ffc107;
-    }
-    
     .special-classroom {
         position: relative;
         border-left: 4px solid #0d6efd;
@@ -35,14 +26,10 @@
     
     .time-slot {
         margin-bottom: 10px;
-        padding: 10px;
+        padding: 15px;
         border-radius: 5px;
         background-color: #f8f9fa;
-    }
-    
-    .time-slot-current {
-        background-color: #e9f5ff;
-        border-left: 4px solid #0d6efd;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     }
     
     .refresh-icon {
@@ -64,6 +51,7 @@
     .time-indicator-current {
         background-color: #0d6efd;
         animation: pulse 1.5s infinite;
+        box-shadow: 0 0 5px #0d6efd;
     }
     
     @keyframes pulse {
@@ -82,11 +70,32 @@
                 <h5 class="mb-0"><i class="bi bi-door-open me-2"></i>教室開門時間</h5>
                 <span class="badge bg-info text-dark">目前學期：{{ $currentSemester }}</span>
             </div>
-            <button class="btn btn-sm btn-primary" onclick="refreshPage()">
-                <i class="bi bi-arrow-clockwise me-1 refresh-icon" id="refresh-icon"></i> 刷新
-            </button>
+            <div class="text-end">
+                <div id="current-time" class="fw-bold"></div>
+                <small class="text-muted">系統時間</small>
+            </div>
         </div>
         <div class="card-body">     
+            @php
+                $timeSlotNames = [
+                    'morning' => '上午時段 (07:30-11:30)',
+                    'afternoon' => '下午時段 (11:30-18:00)',
+                    'evening' => '晚上時段 (18:00-21:40)'
+                ];
+                
+                $timeSlotIcons = [
+                    'morning' => 'sun',
+                    'afternoon' => 'sun-fill',
+                    'evening' => 'moon'
+                ];
+            @endphp
+        
+            <div class="alert alert-info mb-4">
+                <i class="bi bi-info-circle-fill me-2"></i>
+                目前顯示 <strong>{{ isset($currentTimeSlot) && isset($timeSlotNames[$currentTimeSlot]) ? $timeSlotNames[$currentTimeSlot] : '未知時段' }}</strong> 的教室開門狀態，
+                若有課程安排，請在上課前到教室開門。
+            </div>
+        
             @if(count($classrooms) > 0)
                 <div class="row row-cols-1 row-cols-md-3 g-3">
                     @foreach($classrooms as $classroom)
@@ -100,70 +109,25 @@
                                         <div class="classroom-title">{{ $classroom->name }}</div>
                                     </div>
                                     
-                                    <div class="time-slot {{ $currentTimeSlot == 'morning' ? 'time-slot-current' : '' }}">
-                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <div class="time-slot">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
                                             <div>
-                                                <span class="time-indicator {{ $currentTimeSlot == 'morning' ? 'time-indicator-current' : '' }}"></span>
-                                                <strong>上午時段 (07:30-11:30)</strong>
+                                                <span class="time-indicator time-indicator-current"></span>
+                                                <strong>
+                                                    <i class="bi bi-{{ $timeSlotIcons[$currentTimeSlot] }} me-1"></i>
+                                                    {{ $timeSlotNames[$currentTimeSlot] }}
+                                                </strong>
                                             </div>
-                                            @if($currentTimeSlot == 'morning')
-                                                <span class="badge bg-primary">目前時段</span>
-                                            @endif
+                                            <span class="badge bg-primary">目前時段</span>
                                         </div>
-                                        <div class="alert {{ $classroomSchedules[$classroom->code]['morning'] ? 'alert-danger' : 'alert-success' }} mb-0">
+                                        <div class="alert {{ $classroomSchedules[$classroom->code][$currentTimeSlot] ? 'alert-danger' : 'alert-success' }} mb-0">
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div>
-                                                    <i class="bi {{ $classroomSchedules[$classroom->code]['morning'] ? 'bi-lock-fill' : 'bi-unlock' }} me-1"></i>
-                                                    {{ $classroomSchedules[$classroom->code]['morning'] ? '需開門' : '無需開門' }}
+                                                    <i class="bi {{ $classroomSchedules[$classroom->code][$currentTimeSlot] ? 'bi-lock-fill' : 'bi-unlock' }} me-1"></i>
+                                                    {{ $classroomSchedules[$classroom->code][$currentTimeSlot] ? '需開門' : '無需開門' }}
                                                 </div>
-                                                <span class="badge {{ $classroomSchedules[$classroom->code]['morning'] ? 'bg-danger' : 'bg-success' }}">
-                                                    {{ $classroomSchedules[$classroom->code]['morning'] ? '有課程' : '無課程' }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="time-slot {{ $currentTimeSlot == 'afternoon' ? 'time-slot-current' : '' }}">
-                                        <div class="d-flex justify-content-between align-items-center mb-1">
-                                            <div>
-                                                <span class="time-indicator {{ $currentTimeSlot == 'afternoon' ? 'time-indicator-current' : '' }}"></span>
-                                                <strong>下午時段 (11:30-18:00)</strong>
-                                            </div>
-                                            @if($currentTimeSlot == 'afternoon')
-                                                <span class="badge bg-primary">目前時段</span>
-                                            @endif
-                                        </div>
-                                        <div class="alert {{ $classroomSchedules[$classroom->code]['afternoon'] ? 'alert-danger' : 'alert-success' }} mb-0">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <i class="bi {{ $classroomSchedules[$classroom->code]['afternoon'] ? 'bi-lock-fill' : 'bi-unlock' }} me-1"></i>
-                                                    {{ $classroomSchedules[$classroom->code]['afternoon'] ? '需開門' : '無需開門' }}
-                                                </div>
-                                                <span class="badge {{ $classroomSchedules[$classroom->code]['afternoon'] ? 'bg-danger' : 'bg-success' }}">
-                                                    {{ $classroomSchedules[$classroom->code]['afternoon'] ? '有課程' : '無課程' }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="time-slot {{ $currentTimeSlot == 'evening' ? 'time-slot-current' : '' }}">
-                                        <div class="d-flex justify-content-between align-items-center mb-1">
-                                            <div>
-                                                <span class="time-indicator {{ $currentTimeSlot == 'evening' ? 'time-indicator-current' : '' }}"></span>
-                                                <strong>晚上時段 (18:00-21:40)</strong>
-                                            </div>
-                                            @if($currentTimeSlot == 'evening')
-                                                <span class="badge bg-primary">目前時段</span>
-                                            @endif
-                                        </div>
-                                        <div class="alert {{ $classroomSchedules[$classroom->code]['evening'] ? 'alert-danger' : 'alert-success' }} mb-0">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <div>
-                                                    <i class="bi {{ $classroomSchedules[$classroom->code]['evening'] ? 'bi-lock-fill' : 'bi-unlock' }} me-1"></i>
-                                                    {{ $classroomSchedules[$classroom->code]['evening'] ? '需開門' : '無需開門' }}
-                                                </div>
-                                                <span class="badge {{ $classroomSchedules[$classroom->code]['evening'] ? 'bg-danger' : 'bg-success' }}">
-                                                    {{ $classroomSchedules[$classroom->code]['evening'] ? '有課程' : '無課程' }}
+                                                <span class="badge {{ $classroomSchedules[$classroom->code][$currentTimeSlot] ? 'bg-danger' : 'bg-success' }}">
+                                                    {{ $classroomSchedules[$classroom->code][$currentTimeSlot] ? '有課程' : '無課程' }}
                                                 </span>
                                             </div>
                                         </div>
@@ -187,19 +151,28 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        // 自動每5分鐘刷新一次
-        setTimeout(function() {
-            refreshPage();
-        }, 5 * 60 * 1000);
-    });
-    
-    function refreshPage() {
-        let icon = document.getElementById('refresh-icon');
-        icon.classList.add('rotating');
+        // 更新當前時間
+        function updateCurrentTime() {
+            const now = new Date();
+            const options = {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            };
+            $('#current-time').text(now.toLocaleTimeString('zh-TW', options));
+        }
         
-        setTimeout(function() {
-            window.location.reload();
-        }, 500);
+        // 初始更新和設置定時器
+        updateCurrentTime();
+        setInterval(updateCurrentTime, 1000);
+    });
+
+    function refreshPage() {
+        let icon = $('#refresh-icon');
+        icon.addClass('rotating');
+        
+        window.location.reload();
     }
 </script>
 @endpush

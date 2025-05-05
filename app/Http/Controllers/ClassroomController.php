@@ -189,6 +189,27 @@ class ClassroomController extends Controller
             $currentTimeSlot = 'evening';
         }
         
+        $currentTimeSlot = '';
+        $currentHour = $hour;
+        $currentMinute = $minute;
+
+        if (($currentHour > 7 || ($currentHour == 7 && $currentMinute >= 30)) && 
+            ($currentHour < 11 || ($currentHour == 11 && $currentMinute <= 30))) {
+            $currentTimeSlot = 'morning';
+        } elseif (($currentHour > 11 || ($currentHour == 11 && $currentMinute > 30)) && 
+                $currentHour < 18) {
+            $currentTimeSlot = 'afternoon';
+        } elseif (($currentHour >= 18) && 
+                ($currentHour < 21 || ($currentHour == 21 && $currentMinute <= 40))) {
+            $currentTimeSlot = 'evening';
+        } else {
+            if ($currentHour < 7 || ($currentHour == 7 && $currentMinute < 30)) {
+                $currentTimeSlot = 'morning'; 
+            } else {
+                $currentTimeSlot = 'evening'; 
+            }
+        }
+        
         $classroomSchedules = [];
         
         foreach ($classrooms as $classroom) {
