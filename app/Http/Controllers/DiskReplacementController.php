@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DiskReplacement;
 use App\Models\Schedule;
 use App\Models\Classroom;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -67,25 +68,29 @@ class DiskReplacementController extends Controller
     {
         $request->validate([
             'classroom_code' => 'required|exists:classrooms,code',
-            'issue' => 'nullable|string',
+            'issue' => 'required|string'
         ]);
 
-        $latestSchedule = Schedule::where('classroom_code', $request->classroom_code)
-                                ->orderBy('smtr', 'desc')
-                                ->first();
-                                
-        $smtr = $latestSchedule ? $latestSchedule->smtr : date('Y') . (date('n') >= 8 ? '1' : '2');
-        $diskReplaced = $request->has('disk_replaced');
+        $diskReplacement = new DiskReplacement();
+        $diskReplacement->user_id = Auth::user()->id;
+        $diskReplacement->classroom_code = $request->input('classroom_code');
+        $diskReplacement->issue = $request->input('issue');
+        $diskReplacement->replaced_at = now();
+        $diskReplacement->smtr = Schedule::select('smtr')
+                        ->orderBy('created_at', 'desc')
+                        ->first()->smtr ?? date('Y') . (date('n') >= 8 ? '1' : '2');
+        $diskReplacement->disk_replaced = $request->boolean('disk_replaced');
+        $diskReplacement->save();
 
-        DiskReplacement::create([
-            'user_id' => Auth::id(),
-            'classroom_code' => $request->classroom_code,
-            'issue' => $request->issue,
-            'replaced_at' => now(),
-            'smtr' => $smtr,
-            'disk_replaced' => $diskReplaced
-        ]);
+        // 保留篩選條件
+        $building = $request->query('building', 'A');
+        $filterDate = $request->query('filter_date', now()->subMonth()->startOfMonth()->format('Y-m-d'));
+        $needReplacement = $request->boolean('need_replacement') ? 1 : 0;
 
-        return redirect()->back()->with('success', '硬碟更換記錄已儲存');
+        return redirect()->route('classroom.status', [
+            'building' => $building,
+            'filter_date' => $filterDate,
+            'need_replacement' => $needReplacement
+        ])->with('success', '硬碟更換記錄已儲存！');
     }
 }

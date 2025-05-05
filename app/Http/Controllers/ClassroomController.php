@@ -91,11 +91,24 @@ class ClassroomController extends Controller
             return redirect()->route('classroom.status', ['building' => 'A']);
         }
         
+        // 獲取選擇的日期，預設為上個月第一天
+        $filterDate = $request->query('filter_date', now()->subMonth()->startOfMonth()->format('Y-m-d'));
+        $showOnlyNeedReplacement = $request->boolean('need_replacement', false);
+        
         // 排除 A220、A221、A319 這三個特殊教室
-        $classrooms = Classroom::where('code', 'like', $building . '%')
-                          ->whereNotIn('code', ['A220', 'A221', 'A319'])
-                          ->orderBy('code')
-                          ->get();
+        $query = Classroom::where('code', 'like', $building . '%')
+                    ->whereNotIn('code', ['A220', 'A221', 'A319'])
+                    ->orderBy('code');
+                    
+        // 如果選擇只顯示需要更換硬碟的教室
+        if ($showOnlyNeedReplacement) {
+            $query->whereDoesntHave('diskReplacements', function($q) use ($filterDate) {
+                $q->where('replaced_at', '>=', $filterDate)
+                  ->where('disk_replaced', true);
+            });
+        }
+        
+        $classrooms = $query->get();
         
         $floorClassrooms = [];
         foreach ($classrooms as $classroom) {
@@ -107,6 +120,21 @@ class ClassroomController extends Controller
         $response = $this->index($request);
         $busyClassrooms = json_decode($response->getContent(), true);
         
+        // 獲取每個教室最近一次硬碟更換時間
+        $lastDiskReplacements = [];
+        foreach ($classrooms as $classroom) {
+            $lastReplacement = \App\Models\DiskReplacement::where('classroom_code', $classroom->code)
+                ->where('disk_replaced', true)
+                ->orderBy('replaced_at', 'desc')
+                ->first();
+            
+            if ($lastReplacement) {
+                $lastDiskReplacements[$classroom->code] = $lastReplacement->replaced_at->format('Y-m-d');
+            } else {
+                $lastDiskReplacements[$classroom->code] = '從未更換';
+            }
+        }
+        
         $currentSemester = Schedule::select('smtr')
                         ->orderBy('created_at', 'desc')
                         ->first()->smtr ?? date('Y') . (date('n') >= 8 ? '1' : '2');
@@ -115,7 +143,10 @@ class ClassroomController extends Controller
             'floorClassrooms',
             'building',
             'busyClassrooms', 
-            'currentSemester'
+            'currentSemester',
+            'filterDate',
+            'showOnlyNeedReplacement',
+            'lastDiskReplacements'
         ))->with('buildings', $this->buildings);
     }
 

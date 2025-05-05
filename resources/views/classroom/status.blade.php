@@ -10,16 +10,52 @@
                 <h5 class="mb-0"><i class="bi bi-display me-2"></i>教室使用狀態</h5>
                 <span class="badge bg-info text-dark">目前學期：{{ $currentSemester }}</span>
             </div>
-            <button class="btn btn-sm btn-primary" onclick="refreshStatus()">
-                <i class="bi bi-arrow-clockwise me-1"></i> 刷新
-            </button>
+            <div>
+                <button class="btn btn-sm btn-primary" onclick="refreshStatus()">
+                    <i class="bi bi-arrow-clockwise me-1"></i> 刷新
+                </button>
+            </div>
         </div>
         <div class="card-body">
+            <!-- 新增的篩選區塊 -->
+            <div class="mb-4">
+                <form id="filterForm" class="row row-cols-1 row-cols-md-3 g-3 align-items-end">
+                    <div class="col">
+                        <label for="filter_date" class="form-label">選擇日期：</label>
+                        <input type="date" class="form-control" id="filter_date" name="filter_date" 
+                               value="{{ $filterDate }}" max="{{ date('Y-m-d') }}">
+                        <small class="form-text text-muted">顯示此日期後未更換硬碟的教室</small>
+                    </div>
+                    <div class="col">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="need_replacement" 
+                                   name="need_replacement" value="1" {{ $showOnlyNeedReplacement ? 'checked' : '' }}>
+                            <label class="form-check-label" for="need_replacement">
+                                僅顯示需更換硬碟的教室
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-filter me-1"></i> 套用篩選
+                        </button>
+                        <a href="{{ route('classroom.status', ['building' => $building]) }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1"></i> 重設
+                        </a>
+                    </div>
+                    <input type="hidden" name="building" value="{{ $building }}">
+                </form>
+            </div>
+
             <div class="mb-4">
                 <h6 class="mb-3 text-muted"><i class="bi bi-building me-2"></i>選擇學院：</h6>
                 <div class="d-flex flex-wrap gap-2">
                     @foreach($buildings as $code => $name)
-                        <a href="{{ route('classroom.status', ['building' => $code]) }}" 
+                        <a href="{{ route('classroom.status', [
+                            'building' => $code,
+                            'filter_date' => $filterDate,
+                            'need_replacement' => $showOnlyNeedReplacement ? 1 : 0
+                        ]) }}" 
                            class="btn {{ $building == $code ? 'btn-primary' : 'btn-outline-primary' }}">
                             {{ $name }} ({{ $code }})
                         </a>
@@ -51,6 +87,13 @@
                                             <span class="badge {{ $isFree ? 'bg-success' : 'bg-danger' }} mt-1">
                                                 {{ $isFree ? '未使用' : '上課中' }}
                                             </span>
+                                            @if(isset($lastDiskReplacements[$classroom->code]))
+                                                <div class="mt-1 small">
+                                                    <i class="bi bi-hdd me-1"></i>
+                                                    <span class="text-muted">上次更換：</span> <br>
+                                                    {{ $lastDiskReplacements[$classroom->code] }}
+                                                </div>
+                                            @endif
                                         </div>
                                     </button>
                                 </div>
@@ -113,6 +156,17 @@
             $('#classroomCode').text(classroomCode);
             $('#classroomName').text(classroomName);
             $('#classroom_code_input').val(classroomCode);
+        });
+        
+        // 保留篩選條件，同時保持選擇的學院
+        $('#filterForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            // 獲取表單數據
+            var formData = $(this).serialize();
+            
+            // 重定向到帶有查詢參數的路徑
+            window.location.href = '{{ route("classroom.status") }}?' + formData;
         });
         
         window.refreshStatus = function() {
