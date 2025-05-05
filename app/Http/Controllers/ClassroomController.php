@@ -82,6 +82,7 @@ class ClassroomController extends Controller
         return response()->json($result);
     }
 
+    // 顯示教室狀態頁面
     public function status(Request $request)
     {
         $building = $request->query('building', 'A');
@@ -90,7 +91,9 @@ class ClassroomController extends Controller
             return redirect()->route('classroom.status', ['building' => 'A']);
         }
         
+        // 排除 A220、A221、A319 這三個特殊教室
         $classrooms = Classroom::where('code', 'like', $building . '%')
+                          ->whereNotIn('code', ['A220', 'A221', 'A319'])
                           ->orderBy('code')
                           ->get();
         
