@@ -3,175 +3,274 @@
 @section('title', '教室使用狀態')
 
 @section('content')
-<div class="container">
-    <div class="card fade-in">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <div>
-                <h5 class="mb-0"><i class="bi bi-display me-2"></i>教室使用狀態</h5>
-                <span class="badge bg-info text-dark">目前學期：{{ $currentSemester }}</span>
+    <div class="container">
+        <div class="card fade-in">
+            <div class="card-header">
+                <!-- 標題部分 -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <h5 class="mb-0"><i class="bi bi-display me-2"></i>教室使用狀態</h5>
+                        <span class="badge bg-info text-dark">目前學期：{{ $currentSemester }}</span>
+                    </div>
+                </div>
             </div>
-            <div>
-                <button class="btn btn-sm btn-primary" onclick="refreshStatus()">
-                    <i class="bi bi-arrow-clockwise me-1"></i> 刷新
-                </button>
+            <div class="card-body">
+                <div class="mb-4">
+                    <h6 class="mb-3 text-muted"><i class="bi bi-building me-2"></i>選擇學院：</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach($buildings as $code => $name)
+                                            <a href="{{ route('classroom.status', [
+                                'building' => $code,
+                                'filter_date' => $filterDate,
+                                'need_replacement' => $showOnlyNeedReplacement ? 1 : 0
+                            ]) }}" class="btn {{ $building == $code ? 'btn-primary' : 'btn-outline-primary' }}">
+                                                {{ $name }} ({{ $code }})
+                                            </a>
+                        @endforeach
+                    </div>
+                </div>
+
+                <!-- 按鈕部分，強制並排顯示 -->
+                <div class="row" style="margin-bottom: 16px;">
+                    <div class="col-6">
+                        <button class="btn btn-sm btn-outline-primary w-100" data-bs-toggle="modal"
+                            data-bs-target="#filterModal">
+                            <i class="bi bi-funnel me-1"></i> 篩選設定
+                            @if($showOnlyNeedReplacement || $filterDate != now()->subMonth()->startOfMonth()->format('Y-m-d'))
+                                <span class="badge bg-primary">已篩選</span>
+                            @endif
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-sm btn-primary w-100" onclick="refreshStatus()">
+                            <i class="bi bi-arrow-clockwise me-1"></i> 刷新
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 顯示目前篩選狀態 -->
+                @if($showOnlyNeedReplacement || $filterDate != now()->subMonth()->startOfMonth()->format('Y-m-d'))
+                    <div class="alert alert-info mb-4 filter-status">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center">
+                            <div class="mb-2 mb-md-0">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <strong>目前篩選：</strong>
+                                <div class="d-block d-md-inline-block mt-2 mt-md-0">
+                                    @if($filterDate != now()->subMonth()->startOfMonth()->format('Y-m-d'))
+                                        <span class="badge bg-secondary me-2 filter-badge">日期: {{ $filterDate }}</span>
+                                    @endif
+                                    @if($showOnlyNeedReplacement)
+                                        <span class="badge bg-warning text-dark filter-badge">僅顯示需更換硬碟的教室</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <a href="{{ route('classroom.status', ['building' => $building]) }}"
+                                class="btn btn-sm btn-outline-secondary mt-2 mt-md-0">
+                                <i class="bi bi-x-circle me-1"></i> 清除篩選
+                            </a>
+                        </div>
+                    </div>
+                @endif
+
+                @if(count($floorClassrooms) > 0)
+                    @foreach($floorClassrooms as $floor => $floorRooms)
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2">
+                                <i class="bi bi-layers me-2"></i>{{ $floor }}樓
+                            </h5>
+                            <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-2 mt-2">
+                                @foreach($floorRooms as $classroom)
+                                    @php
+                                        $isFree = empty($busyClassrooms[$classroom->code]);
+                                    @endphp
+                                    <div class="col">
+                                        <button class="btn w-100 h-100 {{ $isFree ? 'btn-success' : 'btn-danger' }}"
+                                            data-classroom-code="{{ $classroom->code }}" data-classroom-name="{{ $classroom->name }}"
+                                            data-bs-toggle="modal" data-bs-target="#diskReplacementModal">
+                                            <div class="text-center">
+                                                <h6 class="mb-1 fw-bold">{{ $classroom->code }}</h6>
+                                                <p class="mb-0 small">{{ $classroom->name }}</p>
+                                                <span class="badge {{ $isFree ? 'bg-success' : 'bg-danger' }} mt-1">
+                                                    {{ $isFree ? '未使用' : '上課中' }}
+                                                </span>
+                                                @if(isset($lastDiskReplacements[$classroom->code]))
+                                                    <div class="disk-replacement-date">
+                                                        <i class="bi bi-hdd me-1"></i>
+                                                        上次更換:<br>{{ $lastDiskReplacements[$classroom->code] }}
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </button>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endforeach
+                @else
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>此學院目前沒有教室資料。
+                    </div>
+                @endif
             </div>
         </div>
-        <div class="card-body">
-            <!-- 新增的篩選區塊 -->
-            <div class="mb-4">
-                <form id="filterForm" class="row row-cols-1 row-cols-md-3 g-3 align-items-end">
-                    <div class="col">
-                        <label for="filter_date" class="form-label">選擇日期：</label>
-                        <input type="date" class="form-control" id="filter_date" name="filter_date" 
-                               value="{{ $filterDate }}" max="{{ date('Y-m-d') }}">
-                        <small class="form-text text-muted">顯示此日期後未更換硬碟的教室</small>
-                    </div>
-                    <div class="col">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="need_replacement" 
-                                   name="need_replacement" value="1" {{ $showOnlyNeedReplacement ? 'checked' : '' }}>
+    </div>
+
+    <!-- 篩選設定模態框 -->
+    <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filterModalLabel">
+                        <i class="bi bi-funnel me-2"></i>篩選設定
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button>
+                </div>
+                <form id="filterForm" method="GET" action="{{ route('classroom.status') }}">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="filter_date" class="form-label">選擇日期：</label>
+                            <input type="date" class="form-control" id="filter_date" name="filter_date"
+                                value="{{ $filterDate }}" max="{{ date('Y-m-d') }}">
+                            <small class="form-text text-muted">顯示此日期後未更換硬碟的教室</small>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input class="form-check-input" type="checkbox" id="need_replacement" name="need_replacement"
+                                value="1" {{ $showOnlyNeedReplacement ? 'checked' : '' }}>
                             <label class="form-check-label" for="need_replacement">
                                 僅顯示需更換硬碟的教室
                             </label>
                         </div>
+                        <input type="hidden" name="building" value="{{ $building }}">
                     </div>
-                    <div class="col">
+                    <div class="modal-footer">
+                        <a href="{{ route('classroom.status', ['building' => $building]) }}"
+                            class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i> 重設篩選
+                        </a>
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-filter me-1"></i> 套用篩選
                         </button>
-                        <a href="{{ route('classroom.status', ['building' => $building]) }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-x-circle me-1"></i> 重設
-                        </a>
                     </div>
-                    <input type="hidden" name="building" value="{{ $building }}">
                 </form>
             </div>
+        </div>
+    </div>
 
-            <div class="mb-4">
-                <h6 class="mb-3 text-muted"><i class="bi bi-building me-2"></i>選擇學院：</h6>
-                <div class="d-flex flex-wrap gap-2">
-                    @foreach($buildings as $code => $name)
-                        <a href="{{ route('classroom.status', [
-                            'building' => $code,
-                            'filter_date' => $filterDate,
-                            'need_replacement' => $showOnlyNeedReplacement ? 1 : 0
-                        ]) }}" 
-                           class="btn {{ $building == $code ? 'btn-primary' : 'btn-outline-primary' }}">
-                            {{ $name }} ({{ $code }})
-                        </a>
-                    @endforeach
+    <!-- 硬碟更換表單模態框 -->
+    <div class="modal fade" id="diskReplacementModal" tabindex="-1" aria-labelledby="diskReplacementModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="diskReplacementModalLabel">硬碟更換記錄</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button>
                 </div>
-            </div>
-
-            @if(count($floorClassrooms) > 0)
-                @foreach($floorClassrooms as $floor => $floorRooms)
-                    <div class="mb-4">
-                        <h5 class="border-bottom pb-2">
-                            <i class="bi bi-layers me-2"></i>{{ $floor }}樓
-                        </h5>
-                        <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-2 mt-2">
-                            @foreach($floorRooms as $classroom)
-                                @php
-                                    $isFree = empty($busyClassrooms[$classroom->code]);
-                                @endphp
-                                <div class="col">
-                                    <button 
-                                        class="btn w-100 h-100 {{ $isFree ? 'btn-success' : 'btn-danger' }}" 
-                                        data-classroom-code="{{ $classroom->code }}"
-                                        data-classroom-name="{{ $classroom->name }}"
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#diskReplacementModal">
-                                        <div class="text-center">
-                                            <h6 class="mb-1 fw-bold">{{ $classroom->code }}</h6>
-                                            <p class="mb-0 small">{{ $classroom->name }}</p>
-                                            <span class="badge {{ $isFree ? 'bg-success' : 'bg-danger' }} mt-1">
-                                                {{ $isFree ? '未使用' : '上課中' }}
-                                            </span>
-                                            @if(isset($lastDiskReplacements[$classroom->code]))
-                                                <div class="mt-1 small">
-                                                    <i class="bi bi-hdd me-1"></i>
-                                                    <span class="text-muted">上次更換：</span> <br>
-                                                    {{ $lastDiskReplacements[$classroom->code] }}
-                                                </div>
-                                            @endif
-                                        </div>
-                                    </button>
-                                </div>
-                            @endforeach
+                <form action="{{ route('disk-replacement.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <h5 class="classroom-info">教室：<span id="classroomCode"></span> <span id="classroomName"
+                                    class="text-muted small"></span></h5>
+                            <input type="hidden" name="classroom_code" id="classroom_code_input">
+                        </div>
+                        <div class="mb-3">
+                            <label for="issue" class="form-label">問題描述</label>
+                            <textarea class="form-control" id="issue" name="issue" rows="3"
+                                placeholder="請描述問題..."></textarea>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="disk_replaced" name="disk_replaced" checked>
+                            <label class="form-check-label" for="disk_replaced">已更換硬碟</label>
                         </div>
                     </div>
-                @endforeach
-            @else
-                <div class="alert alert-info">
-                    <i class="bi bi-info-circle me-2"></i>此學院目前沒有教室資料。
-                </div>
-            @endif
-        </div>
-    </div>
-</div>
-
-<!-- 硬碟更換表單模態框 -->
-<div class="modal fade" id="diskReplacementModal" tabindex="-1" aria-labelledby="diskReplacementModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="diskReplacementModalLabel">硬碟更換記錄</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary">儲存記錄</button>
+                    </div>
+                </form>
             </div>
-            <form action="{{ route('disk-replacement.store') }}" method="POST">
-                @csrf
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <h5 class="classroom-info">教室：<span id="classroomCode"></span> <span id="classroomName" class="text-muted small"></span></h5>
-                        <input type="hidden" name="classroom_code" id="classroom_code_input">
-                    </div>
-                    <div class="mb-3">
-                        <label for="issue" class="form-label">問題描述</label>
-                        <textarea class="form-control" id="issue" name="issue" rows="3" placeholder="請描述問題..."></textarea>
-                    </div>
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="disk_replaced" name="disk_replaced" checked>
-                        <label class="form-check-label" for="disk_replaced">已更換硬碟</label>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                    <button type="submit" class="btn btn-primary">儲存記錄</button>
-                </div>
-            </form>
         </div>
     </div>
-</div>
 @endsection
 
 @push('scripts')
-<script>
-    $(document).ready(function() {
-        // 初始化模態框事件
-        $('#diskReplacementModal').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget);
-            var classroomCode = button.data('classroom-code');
-            var classroomName = button.data('classroom-name');
-            
-            $('#classroomCode').text(classroomCode);
-            $('#classroomName').text(classroomName);
-            $('#classroom_code_input').val(classroomCode);
+    <script>
+        $(document).ready(function () {
+            // 初始化模態框事件
+            $('#diskReplacementModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var classroomCode = button.data('classroom-code');
+                var classroomName = button.data('classroom-name');
+
+                $('#classroomCode').text(classroomCode);
+                $('#classroomName').text(classroomName);
+                $('#classroom_code_input').val(classroomCode);
+            });
+
+            window.refreshStatus = function () {
+                location.reload();
+            };
         });
+    </script>
+@endpush
+
+@push('styles')
+    <style>
+        /* 改善按鈕在小螢幕上的顯示 */
+        @media (max-width: 576px) {
+            .btn-sm {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.875rem;
+            }
+
+            /* 確保按鈕等高且內容置中 */
+            .action-buttons .btn {
+                height: 42px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
         
-        // 保留篩選條件，同時保持選擇的學院
-        $('#filterForm').on('submit', function(e) {
-            e.preventDefault();
-            
-            // 獲取表單數據
-            var formData = $(this).serialize();
-            
-            // 重定向到帶有查詢參數的路徑
-            window.location.href = '{{ route("classroom.status") }}?' + formData;
-        });
+        /* 增加按鈕間的間距 */
+        .action-buttons {
+            margin-top: 12px;
+            margin-bottom: 16px;
+        }
+
+        /* 篩選狀態標記樣式優化 */
+        .filter-badge {
+            margin-top: 4px;
+            display: inline-block;
+        }
+
+        /* 硬碟更換日期顯示樣式 */
+        .disk-replacement-date {
+            font-size: 0.75rem;
+            margin-top: 4px;
+            padding-top: 4px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            line-height: 1.4;
+        }
         
-        window.refreshStatus = function() {
-            location.reload();
-        };
-    });
-</script>
+        /* 調整篩選狀態提示區塊的樣式 */
+        .filter-status {
+            margin-top: 16px;
+        }
+        
+        /* 調整按鈕內容的間距 */
+        .action-buttons .btn i {
+            margin-right: 6px;
+        }
+        
+        /* 篩選按鈕中的標記位置調整 */
+        .filter-badge-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #0d6efd;
+            border-radius: 50%;
+            margin-left: 6px;
+        }
+    </style>
 @endpush
