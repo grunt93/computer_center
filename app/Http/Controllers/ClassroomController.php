@@ -91,8 +91,8 @@ class ClassroomController extends Controller
             return redirect()->route('classroom.status', ['building' => 'A']);
         }
         
-        // 獲取選擇的日期，預設為上個月第一天
-        $filterDate = $request->query('filter_date', now()->subMonth()->startOfMonth()->format('Y-m-d'));
+        // 修改這一行: 預設日期改為當天
+        $filterDate = $request->query('filter_date', now()->format('Y-m-d'));
         $showOnlyNeedReplacement = $request->boolean('need_replacement', false);
         
         // 排除 A220、A221、A319 這三個特殊教室

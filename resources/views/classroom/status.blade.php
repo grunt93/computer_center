@@ -19,13 +19,13 @@
                     <h6 class="mb-3 text-muted"><i class="bi bi-building me-2"></i>選擇學院：</h6>
                     <div class="d-flex flex-wrap gap-2">
                         @foreach($buildings as $code => $name)
-                                            <a href="{{ route('classroom.status', [
+                            <a href="{{ route('classroom.status', [
                                 'building' => $code,
                                 'filter_date' => $filterDate,
                                 'need_replacement' => $showOnlyNeedReplacement ? 1 : 0
                             ]) }}" class="btn {{ $building == $code ? 'btn-primary' : 'btn-outline-primary' }}">
-                                                {{ $name }} ({{ $code }})
-                                            </a>
+                                {{ $name }} ({{ $code }})
+                            </a>
                         @endforeach
                     </div>
                 </div>
@@ -36,7 +36,7 @@
                         <button class="btn btn-sm btn-outline-primary w-100" data-bs-toggle="modal"
                             data-bs-target="#filterModal">
                             <i class="bi bi-funnel me-1"></i> 篩選設定
-                            @if($showOnlyNeedReplacement || $filterDate != now()->subMonth()->startOfMonth()->format('Y-m-d'))
+                            @if($showOnlyNeedReplacement || $filterDate != now()->format('Y-m-d'))
                                 <span class="badge bg-primary">已篩選</span>
                             @endif
                         </button>
@@ -49,14 +49,14 @@
                 </div>
 
                 <!-- 顯示目前篩選狀態 -->
-                @if($showOnlyNeedReplacement || $filterDate != now()->subMonth()->startOfMonth()->format('Y-m-d'))
+                @if($showOnlyNeedReplacement || $filterDate != now()->format('Y-m-d'))
                     <div class="alert alert-info mb-4 filter-status">
                         <div class="d-flex flex-wrap justify-content-between align-items-center">
                             <div class="mb-2 mb-md-0">
                                 <i class="bi bi-info-circle me-2"></i>
                                 <strong>目前篩選：</strong>
                                 <div class="d-block d-md-inline-block mt-2 mt-md-0">
-                                    @if($filterDate != now()->subMonth()->startOfMonth()->format('Y-m-d'))
+                                    @if($filterDate != now()->format('Y-m-d'))
                                         <span class="badge bg-secondary me-2 filter-badge">日期: {{ $filterDate }}</span>
                                     @endif
                                     @if($showOnlyNeedReplacement)
@@ -131,7 +131,7 @@
                             <label for="filter_date" class="form-label">選擇日期：</label>
                             <input type="date" class="form-control" id="filter_date" name="filter_date"
                                 value="{{ $filterDate }}" max="{{ date('Y-m-d') }}">
-                            <small class="form-text text-muted">顯示此日期後未更換硬碟的教室</small>
+                            <small class="form-text text-muted">預設為今天，顯示此日期後未更換硬碟的教室</small>
                         </div>
                         <div class="mb-3 form-check">
                             <input class="form-check-input" type="checkbox" id="need_replacement" name="need_replacement"
