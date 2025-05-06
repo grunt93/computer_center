@@ -82,15 +82,20 @@ class DiskReplacementController extends Controller
         $diskReplacement->disk_replaced = $request->boolean('disk_replaced');
         $diskReplacement->save();
 
-        // 保留篩選條件
-        $building = $request->query('building', 'A');
-        $filterDate = $request->query('filter_date', now()->subMonth()->startOfMonth()->format('Y-m-d'));
-        $needReplacement = $request->boolean('need_replacement') ? 1 : 0;
+        $queryParams = [
+            'building' => $request->input('building', 'A'),
+            'filter_date' => $request->input('filter_date', now()->format('Y-m-d')),
+            'need_replacement' => $request->boolean('need_replacement') ? 1 : 0
+        ];
+        
+        // 表單中的 classroom_code，提取其樓層，用於定位
+        $classroomCode = $request->input('classroom_code');
+        if ($classroomCode) {
+            $floor = substr($classroomCode, 1, 1);  // 從教室代碼提取樓層
+            $queryParams['floor'] = $floor;
+        }
 
-        return redirect()->route('classroom.status', [
-            'building' => $building,
-            'filter_date' => $filterDate,
-            'need_replacement' => $needReplacement
-        ])->with('success', '硬碟更換記錄已儲存！');
+        return redirect()->route('classroom.status', $queryParams)
+            ->with('success', '硬碟更換記錄已儲存！');
     }
 }

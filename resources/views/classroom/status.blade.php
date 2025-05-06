@@ -2,6 +2,77 @@
 
 @section('title', '教室使用狀態')
 
+@push('styles')
+    <style>
+        /* 改善按鈕在小螢幕上的顯示 */
+        @media (max-width: 576px) {
+            .btn-sm {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.875rem;
+            }
+
+            /* 確保按鈕等高且內容置中 */
+            .action-buttons .btn {
+                height: 42px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+        
+        /* 增加按鈕間的間距 */
+        .action-buttons {
+            margin-top: 12px;
+            margin-bottom: 16px;
+        }
+
+        /* 篩選狀態標記樣式優化 */
+        .filter-badge {
+            margin-top: 4px;
+            display: inline-block;
+        }
+
+        /* 硬碟更換日期顯示樣式 */
+        .disk-replacement-date {
+            font-size: 0.75rem;
+            margin-top: 4px;
+            padding-top: 4px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            line-height: 1.4;
+        }
+        
+        /* 調整篩選狀態提示區塊的樣式 */
+        .filter-status {
+            margin-top: 16px;
+        }
+        
+        /* 調整按鈕內容的間距 */
+        .action-buttons .btn i {
+            margin-right: 6px;
+        }
+        
+        /* 篩選按鈕中的標記位置調整 */
+        .filter-badge-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #0d6efd;
+            border-radius: 50%;
+            margin-left: 6px;
+        }
+
+        /* 新增平滑滾動效果 */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* 教室按鈕點擊效果增強 */
+        .btn:active {
+            transform: scale(0.98);
+        }
+    </style>
+@endpush
+
 @section('content')
     <div class="container">
         <div class="card fade-in">
@@ -75,7 +146,7 @@
                 @if(count($floorClassrooms) > 0)
                     @foreach($floorClassrooms as $floor => $floorRooms)
                         <div class="mb-4">
-                            <h5 class="border-bottom pb-2">
+                            <h5 class="border-bottom pb-2" id="floor-{{ $floor }}">
                                 <i class="bi bi-layers me-2"></i>{{ $floor }}樓
                             </h5>
                             <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-2 mt-2">
@@ -165,7 +236,7 @@
                     <h5 class="modal-title" id="diskReplacementModalLabel">硬碟更換記錄</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="關閉"></button>
                 </div>
-                <form action="{{ route('disk-replacement.store') }}" method="POST">
+                <form action="{{ route('disk-replacement.store') }}" method="POST" id="diskReplacementForm">
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
@@ -182,6 +253,10 @@
                             <input type="checkbox" class="form-check-input" id="disk_replaced" name="disk_replaced" checked>
                             <label class="form-check-label" for="disk_replaced">已更換硬碟</label>
                         </div>
+                        <!-- 隱藏字段保存當前狀態 -->
+                        <input type="hidden" name="building" value="{{ $building }}">
+                        <input type="hidden" name="filter_date" value="{{ $filterDate }}">
+                        <input type="hidden" name="need_replacement" value="{{ $showOnlyNeedReplacement ? 1 : 0 }}">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
@@ -196,6 +271,16 @@
 @push('scripts')
     <script>
         $(document).ready(function () {
+            // 恢復上一次的滾動位置
+            if (sessionStorage.getItem('scrollPosition')) {
+                $(window).scrollTop(sessionStorage.getItem('scrollPosition'));
+                
+                // 延遲一下，確保頁面元素都已載入
+                setTimeout(function() {
+                    $(window).scrollTop(sessionStorage.getItem('scrollPosition'));
+                }, 200);
+            }
+            
             // 初始化模態框事件
             $('#diskReplacementModal').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget);
@@ -205,72 +290,26 @@
                 $('#classroomCode').text(classroomCode);
                 $('#classroomName').text(classroomName);
                 $('#classroom_code_input').val(classroomCode);
+                
+                // 保存滾動位置
+                sessionStorage.setItem('scrollPosition', $(window).scrollTop());
             });
 
+            // 刷新頁面時也保存位置
             window.refreshStatus = function () {
+                sessionStorage.setItem('scrollPosition', $(window).scrollTop());
                 location.reload();
             };
+            
+            // 提交表單前保存滾動位置
+            $('#diskReplacementForm').on('submit', function() {
+                sessionStorage.setItem('scrollPosition', $(window).scrollTop());
+                // 同時保存當前篩選條件和樓層資訊
+                var currentFloor = $('.border-bottom.pb-2:visible').first().text().trim();
+                if (currentFloor) {
+                    sessionStorage.setItem('currentFloor', currentFloor);
+                }
+            });
         });
     </script>
-@endpush
-
-@push('styles')
-    <style>
-        /* 改善按鈕在小螢幕上的顯示 */
-        @media (max-width: 576px) {
-            .btn-sm {
-                padding: 0.5rem 0.75rem;
-                font-size: 0.875rem;
-            }
-
-            /* 確保按鈕等高且內容置中 */
-            .action-buttons .btn {
-                height: 42px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-        }
-        
-        /* 增加按鈕間的間距 */
-        .action-buttons {
-            margin-top: 12px;
-            margin-bottom: 16px;
-        }
-
-        /* 篩選狀態標記樣式優化 */
-        .filter-badge {
-            margin-top: 4px;
-            display: inline-block;
-        }
-
-        /* 硬碟更換日期顯示樣式 */
-        .disk-replacement-date {
-            font-size: 0.75rem;
-            margin-top: 4px;
-            padding-top: 4px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
-            line-height: 1.4;
-        }
-        
-        /* 調整篩選狀態提示區塊的樣式 */
-        .filter-status {
-            margin-top: 16px;
-        }
-        
-        /* 調整按鈕內容的間距 */
-        .action-buttons .btn i {
-            margin-right: 6px;
-        }
-        
-        /* 篩選按鈕中的標記位置調整 */
-        .filter-badge-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: #0d6efd;
-            border-radius: 50%;
-            margin-left: 6px;
-        }
-    </style>
 @endpush
