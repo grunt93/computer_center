@@ -31,6 +31,24 @@
             box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
         }
         
+        /* 特別處理無記錄的情況 */
+        .table-responsive-card tbody tr.no-records-row {
+            display: block;
+            width: 100%;
+            border: none;
+            box-shadow: none;
+        }
+        
+        .table-responsive-card tbody tr.no-records-row td {
+            display: block;
+            padding: 1rem;
+            border: none;
+        }
+        
+        .table-responsive-card tbody tr.no-records-row td:before {
+            content: none;
+        }
+        
         .table-responsive-card tbody td {
             display: flex;
             justify-content: space-between;
@@ -191,7 +209,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr>
+                            <tr class="no-records-row">
                                 <td colspan="6" class="text-center py-4">
                                     <div class="alert alert-info mb-0">
                                         <i class="bi bi-info-circle me-2"></i>沒有找到相關記錄
