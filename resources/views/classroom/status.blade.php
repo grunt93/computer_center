@@ -271,14 +271,21 @@
 @push('scripts')
     <script>
         $(document).ready(function () {
-            // 恢復上一次的滾動位置
-            if (sessionStorage.getItem('scrollPosition')) {
-                $(window).scrollTop(sessionStorage.getItem('scrollPosition'));
+            // 檢查是否是從表單提交返回的頁面
+            const isFromSubmission = sessionStorage.getItem('isFromSubmission') === 'true';
+            
+            // 只有在從表單提交返回時才恢復滾動位置
+            if (isFromSubmission && sessionStorage.getItem('scrollPosition')) {
+                const savedPosition = parseInt(sessionStorage.getItem('scrollPosition'));
+                $(window).scrollTop(savedPosition);
                 
                 // 延遲一下，確保頁面元素都已載入
                 setTimeout(function() {
-                    $(window).scrollTop(sessionStorage.getItem('scrollPosition'));
+                    $(window).scrollTop(savedPosition);
                 }, 200);
+                
+                // 清除標記，以便下次正常訪問頁面時不會自動滾動
+                sessionStorage.removeItem('isFromSubmission');
             }
             
             // 初始化模態框事件
@@ -295,20 +302,25 @@
                 sessionStorage.setItem('scrollPosition', $(window).scrollTop());
             });
 
-            // 刷新頁面時也保存位置
+            // 刷新頁面時也保存位置，但不標記為表單提交
             window.refreshStatus = function () {
                 sessionStorage.setItem('scrollPosition', $(window).scrollTop());
+                sessionStorage.setItem('isFromSubmission', 'false'); // 明確標記不是表單提交
                 location.reload();
             };
             
-            // 提交表單前保存滾動位置
+            // 提交表單前保存滾動位置並標記為表單提交
             $('#diskReplacementForm').on('submit', function() {
                 sessionStorage.setItem('scrollPosition', $(window).scrollTop());
+                sessionStorage.setItem('isFromSubmission', 'true'); // 標記為表單提交
+                
                 // 同時保存當前篩選條件和樓層資訊
                 var currentFloor = $('.border-bottom.pb-2:visible').first().text().trim();
                 if (currentFloor) {
                     sessionStorage.setItem('currentFloor', currentFloor);
                 }
+                
+                return true;
             });
         });
     </script>
