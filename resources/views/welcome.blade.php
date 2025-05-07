@@ -165,91 +165,94 @@
         </div>
     </section>
 
-    <!-- 公告區域 -->
-    <section class="py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="card announcement-section animate-fade-up">
-                        <div class="card-body">
-                            <h3 class="mb-4">
-                                <i class="bi bi-megaphone me-2 text-primary"></i>最新公告
-                            </h3>
+    @auth
+        <!-- 公告區域 -->
+        <section class="py-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card announcement-section animate-fade-up">
+                            <div class="card-body">
+                                <h3 class="mb-4">
+                                    <i class="bi bi-megaphone me-2 text-primary"></i>最新公告
+                                </h3>
 
-                            <div class="announcement-card p-3 mb-3">
-                                <div class="announcement-header">
-                                    <div>
-                                        <h4 class="announcement-title">
-                                            更換硬碟軟體步驟
-                                        </h4>
+                                <div class="announcement-card p-3 mb-3">
+                                    <div class="announcement-header">
+                                        <div>
+                                            <h4 class="announcement-title">
+                                                更換硬碟軟體步驟
+                                            </h4>
+                                        </div>
+                                        <div class="announcement-date">
+                                            <i class="bi bi-calendar3 me-1"></i>2025-05-06
+                                        </div>
                                     </div>
-                                    <div class="announcement-date">
-                                        <i class="bi bi-calendar3 me-1"></i>2025-05-06
+                                    <div class="announcement-content">
+                                        <ol>
+                                            <li>登入講桌機: <br>
+                                                帳號: admin <br>
+                                                密碼: cc4561
+                                            </li>
+
+                                            <li>控制設備開啟投影機</li>
+
+                                            <li>修改電腦名稱
+                                                <ul>
+                                                    <li>本機</li>
+                                                    <li>內容</li>
+                                                    <li>重新命名此電腦</li>
+                                                </ul>
+                                            </li>
+
+                                            <li>切同步顯示
+                                                <ul>
+                                                    <li>快捷鍵win+p</li>
+                                                </ul>
+                                            </li>
+
+                                            <li>解析度: 1280*800
+                                                <ul>
+                                                    <li>設定</li>
+                                                    <li>系統</li>
+                                                    <li>顯示器</li>
+                                                    <li>顯示器解析度</li>
+                                                </ul>
+                                            </li>
+                                            <li>調整觸控
+                                                <ul>
+                                                    <li>控制台</li>
+                                                    <li>硬體和音效</li>
+                                                    <li>平板電腦設定</li>
+                                                    <li>校正螢幕以進行手寫筆或觸控輸入</li>
+                                                </ul>
+                                            </li>
+                                            <li>設定還原
+                                                <ul>
+                                                    <li>右下角(箭頭)</li>
+                                                    <li>Reboot
+                                                        <img src="{{ asset('/image/reboot.png') }}"
+                                                            style="display: height: 15px; width: 15px;">
+                                                    </li>
+                                                    <li>
+                                                        帳號: administrator <br>
+                                                        密碼: aa123456
+                                                    </li>
+                                                    <li>還原模式設置(初始點)</li>
+                                                    <li>初始點設置(更新初始點)</li>
+                                                </ul>
+                                            </li>
+                                        </ol>
+                                        <p class="mb-0">如有任何使用問題，請聯繫分機3802或Line群組</p>
                                     </div>
-                                </div>
-                                <div class="announcement-content">
-                                    <ol>
-                                        <li>登入講桌機: <br>
-                                            帳號: admin <br>
-                                            密碼: cc4561
-                                        </li>
-
-                                        <li>控制設備開啟投影機</li>
-
-                                        <li>修改電腦名稱
-                                            <ul>
-                                                <li>本機</li>
-                                                <li>內容</li>
-                                                <li>重新命名此電腦</li>
-                                            </ul>
-                                        </li>
-
-                                        <li>切同步顯示
-                                            <ul>
-                                                <li>快捷鍵win+p</li>
-                                            </ul>
-                                        </li>
-
-                                        <li>解析度: 1280*800
-                                            <ul>
-                                                <li>設定</li>
-                                                <li>系統</li>
-                                                <li>顯示器</li>
-                                                <li>顯示器解析度</li>
-                                            </ul>
-                                        </li>
-                                        <li>調整觸控
-                                            <ul>
-                                                <li>控制台</li>
-                                                <li>硬體和音效</li>
-                                                <li>平板電腦設定</li>
-                                                <li>校正螢幕以進行手寫筆或觸控輸入</li>
-                                            </ul>
-                                        </li>
-                                        <li>設定還原
-                                            <ul>
-                                                <li>右下角(箭頭)</li>
-                                                <li>Reboot
-                                                    <img src="{{ asset('/image/reboot.png') }}" style="display: height: 15px; width: 15px;">
-                                                </li>
-                                                <li>
-                                                    帳號: administrator <br>
-                                                    密碼: aa123456
-                                                </li>
-                                                <li>還原模式設置(初始點)</li>
-                                                <li>初始點設置(更新初始點)</li>
-                                            </ul>
-                                        </li>
-                                    </ol>
-                                    <p class="mb-0">如有任何使用問題，請聯繫分機3802或Line群組</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    @endauth
 
     <!-- 主要功能介紹 -->
     <section class="py-5">
