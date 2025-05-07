@@ -68,13 +68,16 @@ class DiskReplacementController extends Controller
     {
         $request->validate([
             'classroom_code' => 'required|exists:classrooms,code',
-            'issue' => 'required|string'
+            // issue 欄位允許為空
         ]);
 
         $diskReplacement = new DiskReplacement();
         $diskReplacement->user_id = Auth::user()->id;
         $diskReplacement->classroom_code = $request->input('classroom_code');
+        
+        // 直接將輸入的 issue 值傳給資料庫，即使為空
         $diskReplacement->issue = $request->input('issue');
+        
         $diskReplacement->replaced_at = now();
         $diskReplacement->smtr = Schedule::select('smtr')
                         ->orderBy('created_at', 'desc')

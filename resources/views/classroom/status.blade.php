@@ -245,9 +245,9 @@
                             <input type="hidden" name="classroom_code" id="classroom_code_input">
                         </div>
                         <div class="mb-3">
-                            <label for="issue" class="form-label">問題描述</label>
-                            <textarea class="form-control" id="issue" name="issue" rows="3"
-                                placeholder="請描述問題..."></textarea>
+                            <label for="issue" class="form-label">問題描述 (選填)</label>
+                            <textarea class="form-control" id="issue" name="issue" rows="3"></textarea>
+                            <small class="form-text text-muted">如無特殊問題，可留空</small>
                         </div>
                         <div class="mb-3 form-check">
                             <input type="checkbox" class="form-check-input" id="disk_replaced" name="disk_replaced" checked>
