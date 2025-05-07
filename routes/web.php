@@ -11,7 +11,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+Auth::routes(['register' => false]);
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
@@ -32,6 +32,12 @@ Route::controller(ProfileController::class)
         // 管理員路由
         Route::middleware(['admin'])->group(function () {
             Route::get('/users', 'index')->name('users.index');
+            
+            // 將具體路由放在參數化路由前面
+            Route::get('/users/create', 'createUser')->name('users.create');
+            Route::post('/users', 'storeUser')->name('users.store');
+            
+            // 參數化路由放在後面
             Route::get('/users/{user}', 'showUser')->name('users.show');
             Route::get('/users/{user}/edit', 'editUser')->name('users.edit');
             Route::put('/users/{user}', 'updateUser')->name('users.update');

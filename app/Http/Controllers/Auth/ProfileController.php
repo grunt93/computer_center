@@ -226,4 +226,52 @@ class ProfileController extends Controller
         return redirect()->route('profile.users.index')
             ->with('status', '用戶帳號已成功刪除！');
     }
+
+    /**
+     * 顯示創建用戶的表單
+     */
+    public function createUser()
+    {
+        return view('auth.profile.admins.create');
+    }
+
+    /**
+     * 儲存新用戶
+     */
+    public function storeUser(Request $request)
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'student_id' => ['required', 'string', 'max:10', 'unique:users,student_id'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'role' => ['required', 'string', 'in:admin,staff'],
+        ], [
+            'name.required' => '請輸入姓名',
+            'name.max' => '姓名不能超過 255 個字元',
+            'student_id.required' => '請輸入學號',
+            'student_id.max' => '學號不能超過 10 個字元',
+            'student_id.unique' => '此學號已被使用',
+            'email.required' => '請輸入電子郵件',
+            'email.email' => '請輸入有效的電子郵件地址',
+            'email.max' => '電子郵件不能超過 255 個字元',
+            'email.unique' => '此電子郵件已被使用',
+            'password.required' => '請輸入密碼',
+            'password.min' => '密碼至少需要 8 個字元',
+            'password.confirmed' => '兩次輸入的密碼不相符',
+            'role.required' => '請選擇角色',
+            'role.in' => '無效的角色選擇'
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'student_id' => strtoupper($request->student_id),
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
+        ]);
+
+        return redirect()->route('profile.users.index')
+            ->with('status', '新用戶已成功建立！');
+    }
 }

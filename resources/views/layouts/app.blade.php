@@ -276,12 +276,7 @@
                                 </li>
                             @endif
 
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}"><i class="bi bi-person-plus me-1"></i>
-                                        註冊</a>
-                                </li>
-                            @endif
+                            {{-- 已移除註冊功能，改為由管理員建立用戶 --}}
                         @else
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
