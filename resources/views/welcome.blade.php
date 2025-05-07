@@ -238,7 +238,12 @@
                                                         帳號: administrator <br>
                                                         密碼: aa123456
                                                     </li>
-                                                    <li>還原模式設置(初始點)</li>
+                                                    <li>還原模式設置
+                                                        <ul>
+                                                            <li>在windows事件恢復</li>
+                                                            <li>每次電腦啟動</li>
+                                                        </ul>
+                                                    </li>
                                                     <li>初始點設置(更新初始點)</li>
                                                 </ul>
                                             </li>
