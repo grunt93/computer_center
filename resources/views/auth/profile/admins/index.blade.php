@@ -92,9 +92,6 @@
                                             <a href="{{ route('profile.users.show', $user) }}" class="btn btn-sm btn-info mb-1">
                                                 <i class="bi bi-eye me-1"></i>查看
                                             </a>
-                                            <a href="{{ route('profile.users.edit', $user) }}" class="btn btn-sm btn-primary mb-1">
-                                                <i class="bi bi-pencil me-1"></i>編輯
-                                            </a>
                                         @endif
                                     </td>
                                 </tr>
