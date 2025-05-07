@@ -42,15 +42,18 @@
                             <div class="col-md-6">
                                 <div class="input-password-wrapper">
                                     <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" 
-                                           name="password" required autocomplete="current-password" 
+                                           name="password" autocomplete="current-password" 
                                            placeholder="請輸入密碼">
-                                    <i class="bi bi-eye password-toggle-icon" data-target="password"></i>
+                                    <i class="bi bi-eye password-toggle-icon" data-target="password" title="顯示/隱藏密碼"></i>
                                     @error('password')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
                                         </span>
                                     @enderror
                                 </div>
+                                <small class="form-text text-muted mt-1">
+                                    第一次登入，可無須輸入密碼
+                                </small>
                             </div>
                         </div>
 
@@ -98,3 +101,20 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        // 獲取密碼欄位
+        const passwordField = $('#password');
+        
+        // 美化提示訊息
+        $('.form-text:contains("第一次登入")').addClass('first-login-hint');
+        
+        // 當用戶點擊提示訊息時，自動聚焦到提交按鈕
+        $('.first-login-hint').on('click', function() {
+            $('button[type="submit"]').focus();
+        });
+    });
+</script>
+@endpush

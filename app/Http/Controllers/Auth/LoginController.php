@@ -46,26 +46,21 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         try {
-            // 修改驗證規則
+            // 驗證輸入
             $request->validate([
                 'email' => ['required'],
-                'password' => ['required', 'string']
+                // 不再要求密碼必填
+                'password' => ['nullable', 'string']
             ], [
                 'email.required' => '請輸入電子郵件',
-                'password.required' => '請輸入密碼'
             ]);
 
-            // 檢查用戶是否存在
+            // 查找用戶
             $user = null;
             if ($request->email === 'admin') {
                 $user = User::where('email', 'admin')
                          ->where('role', 'admin')
                          ->first();
-                $credentials = [
-                    'email' => $request->email,
-                    'password' => $request->password,
-                    'role' => 'admin'
-                ];
             } else {
                 // 一般用戶驗證 email 格式
                 if (!filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
@@ -74,7 +69,6 @@ class LoginController extends Controller
                     ]);
                 }
                 $user = User::where('email', $request->email)->first();
-                $credentials = $request->only('email', 'password');
             }
 
             // 檢查用戶是否存在
@@ -84,11 +78,19 @@ class LoginController extends Controller
                 ]);
             }
 
-            // 檢查用戶密碼是否為 null
-            if ($user->password === null) {
+            // 檢查用戶是否需要設置密碼 (空白密碼)
+            // 改善檢測邏輯，同時處理 null 和空字串的情況
+            if ($user->password === null || $user->password === '' || strlen(trim($user->password)) === 0) {
                 // 將用戶 ID 存入 session 以便設置密碼頁面使用
                 session(['setup_password_user_id' => $user->id]);
                 return redirect()->route('password.setup');
+            }
+
+            // 密碼不能為空（對於已經設置過密碼的用戶）
+            if (empty($request->password)) {
+                throw ValidationException::withMessages([
+                    'password' => ['請輸入密碼']
+                ]);
             }
 
             // 檢查登入次數限制
@@ -101,7 +103,7 @@ class LoginController extends Controller
             }
 
             // 嘗試登入
-            if (!Auth::attempt($credentials, $request->boolean('remember'))) {
+            if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
                 $this->limiter()->hit($this->throttleKey($request));
                 throw ValidationException::withMessages([
                     'email' => ['帳號或密碼錯誤']

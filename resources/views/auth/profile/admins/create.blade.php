@@ -61,37 +61,9 @@
                             @enderror
                         </div>
 
-                        <div class="mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="skip_password" name="skip_password" value="1" {{ old('skip_password') ? 'checked' : '' }}>
-                                <label class="form-check-label" for="skip_password">
-                                    <i class="bi bi-shield-lock me-1"></i>讓用戶首次登入時設置密碼
-                                </label>
-                                <div class="form-text">選擇此選項後，用戶首次登入時將被要求設置密碼。</div>
-                            </div>
-                        </div>
-
-                        <div id="password_fields" class="mb-3 {{ old('skip_password') ? 'd-none' : '' }}">
-                            <div class="mb-3">
-                                <label for="password" class="form-label">密碼</label>
-                                <div class="input-password-wrapper">
-                                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password">
-                                    <i class="bi bi-eye password-toggle-icon" data-target="password"></i>
-                                    @error('password')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="password-confirm" class="form-label">確認密碼</label>
-                                <div class="input-password-wrapper">
-                                    <input id="password-confirm" type="password" class="form-control" name="password_confirmation">
-                                    <i class="bi bi-eye password-toggle-icon" data-target="password-confirm"></i>
-                                </div>
-                            </div>
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>用戶將在首次登入時設置密碼。
+                            <input type="hidden" name="skip_password" value="1">
                         </div>
 
                         <div class="d-grid">
@@ -113,39 +85,6 @@
         // 將學號自動轉為大寫
         $('#student_id').on('input', function() {
             $(this).val($(this).val().toUpperCase());
-        });
-
-        // 控制密碼欄位的顯示
-        $('#skip_password').change(function() {
-            if ($(this).is(':checked')) {
-                $('#password_fields').addClass('d-none');
-                $('#password, #password-confirm').prop('required', false);
-            } else {
-                $('#password_fields').removeClass('d-none');
-                $('#password, #password-confirm').prop('required', true);
-            }
-        });
-
-        // 表單提交前驗證
-        $('#createUserForm').submit(function() {
-            if (!$('#skip_password').is(':checked')) {
-                if ($('#password').val() === '') {
-                    alert('請輸入密碼');
-                    $('#password').focus();
-                    return false;
-                }
-                if ($('#password-confirm').val() === '') {
-                    alert('請確認密碼');
-                    $('#password-confirm').focus();
-                    return false;
-                }
-                if ($('#password').val() !== $('#password-confirm').val()) {
-                    alert('兩次輸入的密碼不相符');
-                    $('#password-confirm').focus();
-                    return false;
-                }
-            }
-            return true;
         });
     });
 </script>

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
 {
@@ -261,34 +262,20 @@ class ProfileController extends Controller
             'role.in' => '無效的角色選擇'
         ];
         
-        // 如果不是使用「首次登入設置密碼」功能，則檢查密碼
-        if (!$request->has('skip_password') || !$request->skip_password) {
-            $validation['password'] = ['required', 'string', 'min:8', 'confirmed'];
-            $messages['password.required'] = '請輸入密碼';
-            $messages['password.min'] = '密碼至少需要 8 個字元';
-            $messages['password.confirmed'] = '兩次輸入的密碼不相符';
-        }
-        
         $request->validate($validation, $messages);
         
-        $userData = [
+        // 使用 DB 原始方法插入資料，以避開 SQL NOT NULL 限制
+        $userId = DB::table('users')->insertGetId([
             'name' => $request->name,
             'email' => $request->email,
             'student_id' => strtoupper($request->student_id),
             'role' => $request->role,
-        ];
-        
-        // 如果不是使用「首次登入設置密碼」功能，則設置密碼
-        if (!$request->has('skip_password') || !$request->skip_password) {
-            $userData['password'] = Hash::make($request->password);
-        } else {
-            // 密碼為空值
-            $userData['password'] = null;
-        }
-        
-        $user = User::create($userData);
+            'password' => '', // 使用空字串代替 NULL
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
 
         return redirect()->route('profile.users.index')
-            ->with('status', '新用戶已成功建立！' . ($request->skip_password ? '用戶首次登入時需要設置密碼。' : ''));
+            ->with('status', '新用戶已成功建立！用戶首次登入時需要設置密碼。');
     }
 }

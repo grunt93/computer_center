@@ -19,47 +19,32 @@
                     <form method="POST" action="{{ route('password.setup.submit') }}">
                         @csrf
 
+                        <!-- 顯示電子郵件 (唯讀) -->
                         <div class="mb-3">
-                            <label for="email" class="form-label">
-                                <i class="bi bi-envelope me-1"></i>您的電子郵件
-                            </label>
+                            <label for="email" class="form-label">電子郵件</label>
                             <input id="email" type="email" class="form-control" value="{{ $email }}" readonly>
-                            <div class="form-text">由管理員建立的帳號，請設置您的密碼。</div>
                         </div>
 
-                        <div class="mb-4">
-                            <label for="password" class="form-label">
-                                <i class="bi bi-lock me-1"></i>新密碼
-                            </label>
-                            <div class="input-password-wrapper">
-                                <input id="password" type="password" 
-                                       class="form-control @error('password') is-invalid @enderror" 
-                                       name="password" required autofocus>
-                                <i class="bi bi-eye password-toggle-icon" data-target="password"></i>
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                                <div class="form-text">密碼至少需要 8 個字元。</div>
-                            </div>
+                        <!-- 密碼欄位 -->
+                        <div class="mb-3">
+                            <label for="password" class="form-label">新密碼</label>
+                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required>
+                            @error('password')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                         </div>
 
-                        <div class="mb-4">
-                            <label for="password-confirm" class="form-label">
-                                <i class="bi bi-shield me-1"></i>確認密碼
-                            </label>
-                            <div class="input-password-wrapper">
-                                <input id="password-confirm" type="password" class="form-control"
-                                       name="password_confirmation" required>
-                                <i class="bi bi-eye password-toggle-icon" data-target="password-confirm"></i>
-                            </div>
+                        <!-- 確認密碼欄位 -->
+                        <div class="mb-3">
+                            <label for="password-confirm" class="form-label">確認密碼</label>
+                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
                         </div>
 
+                        <!-- 提交按鈕 -->
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-circle me-1"></i>設置密碼並登入
-                            </button>
+                            <button type="submit" class="btn btn-primary">設置密碼並登入</button>
                         </div>
                     </form>
                 </div>
