@@ -16,7 +16,6 @@ class DiskReplacementController extends Controller
     {
         $query = DiskReplacement::with(['user', 'classroom']);
         
-        // 篩選條件
         if ($request->has('smtr') && $request->smtr) {
             $query->where('smtr', $request->smtr);
         }
@@ -29,14 +28,12 @@ class DiskReplacementController extends Controller
             $query->where('classroom_code', 'like', $request->classroom_code . '%');
         }
         
-        // 新增用戶名稱查詢
         if ($request->filled('user_name')) {
             $query->whereHas('user', function($q) use ($request) {
                 $q->where('name', 'like', '%' . $request->user_name . '%');
             });
         }
         
-        // 新增日期篩選
         if ($request->filled('start_date')) {
             $query->whereDate('replaced_at', '>=', $request->start_date);
         }
@@ -45,18 +42,15 @@ class DiskReplacementController extends Controller
             $query->whereDate('replaced_at', '<=', $request->end_date);
         }
         
-        // 排序
         $query->orderBy('replaced_at', 'desc');
         
         $replacements = $query->paginate(15);
         
-        // 取得所有學期供篩選
         $semesters = DiskReplacement::select('smtr')
                     ->distinct()
                     ->orderBy('smtr', 'desc')
                     ->pluck('smtr');
                     
-        // 取得所有建築物供篩選
         $buildings = Classroom::select(DB::raw('SUBSTRING(code, 1, 1) as building'))
                     ->distinct()
                     ->pluck('building');
@@ -68,14 +62,12 @@ class DiskReplacementController extends Controller
     {
         $request->validate([
             'classroom_code' => 'required|exists:classrooms,code',
-            // issue 欄位允許為空
         ]);
 
         $diskReplacement = new DiskReplacement();
         $diskReplacement->user_id = Auth::user()->id;
         $diskReplacement->classroom_code = $request->input('classroom_code');
         
-        // 直接將輸入的 issue 值傳給資料庫，即使為空
         $diskReplacement->issue = $request->input('issue');
         
         $diskReplacement->replaced_at = now();
