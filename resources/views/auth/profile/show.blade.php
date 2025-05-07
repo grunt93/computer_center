@@ -24,6 +24,27 @@
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
     }
+    
+    /* 響應式調整 */
+    @media (max-width: 767.98px) {
+        .profile-header {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+        
+        .profile-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .profile-actions .btn {
+            width: 100%;
+            margin-left: 0 !important;
+        }
+    }
 </style>
 @endpush
 
@@ -41,11 +62,11 @@
             <!-- 個人資料卡片 -->
             <div class="card profile-card mb-4">
                 <div class="card-header bg-light">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span>
+                    <div class="d-flex justify-content-between align-items-center profile-header">
+                        <span class="mb-2 mb-md-0">
                             <i class="bi bi-person-circle me-2"></i>個人資料
                         </span>
-                        <div class="btn-group">
+                        <div class="btn-group profile-actions">
                             <a href="{{ route('profile.edit') }}" class="btn btn-info btn-sm">
                                 <i class="bi bi-pencil-square me-1"></i>編輯資料
                             </a>
