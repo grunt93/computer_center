@@ -240,13 +240,14 @@ class ProfileController extends Controller
      */
     public function storeUser(Request $request)
     {
-        $request->validate([
+        $validation = [
             'name' => ['required', 'string', 'max:255'],
             'student_id' => ['required', 'string', 'max:10', 'unique:users,student_id'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
             'role' => ['required', 'string', 'in:admin,staff'],
-        ], [
+        ];
+        
+        $messages = [
             'name.required' => '請輸入姓名',
             'name.max' => '姓名不能超過 255 個字元',
             'student_id.required' => '請輸入學號',
@@ -256,22 +257,38 @@ class ProfileController extends Controller
             'email.email' => '請輸入有效的電子郵件地址',
             'email.max' => '電子郵件不能超過 255 個字元',
             'email.unique' => '此電子郵件已被使用',
-            'password.required' => '請輸入密碼',
-            'password.min' => '密碼至少需要 8 個字元',
-            'password.confirmed' => '兩次輸入的密碼不相符',
             'role.required' => '請選擇角色',
             'role.in' => '無效的角色選擇'
-        ]);
-
-        $user = User::create([
+        ];
+        
+        // 如果不是使用「首次登入設置密碼」功能，則檢查密碼
+        if (!$request->has('skip_password') || !$request->skip_password) {
+            $validation['password'] = ['required', 'string', 'min:8', 'confirmed'];
+            $messages['password.required'] = '請輸入密碼';
+            $messages['password.min'] = '密碼至少需要 8 個字元';
+            $messages['password.confirmed'] = '兩次輸入的密碼不相符';
+        }
+        
+        $request->validate($validation, $messages);
+        
+        $userData = [
             'name' => $request->name,
             'email' => $request->email,
             'student_id' => strtoupper($request->student_id),
-            'password' => Hash::make($request->password),
             'role' => $request->role,
-        ]);
+        ];
+        
+        // 如果不是使用「首次登入設置密碼」功能，則設置密碼
+        if (!$request->has('skip_password') || !$request->skip_password) {
+            $userData['password'] = Hash::make($request->password);
+        } else {
+            // 密碼為空值
+            $userData['password'] = null;
+        }
+        
+        $user = User::create($userData);
 
         return redirect()->route('profile.users.index')
-            ->with('status', '新用戶已成功建立！');
+            ->with('status', '新用戶已成功建立！' . ($request->skip_password ? '用戶首次登入時需要設置密碼。' : ''));
     }
 }

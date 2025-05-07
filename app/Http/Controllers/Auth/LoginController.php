@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use App\Models\User;
 
 class LoginController extends Controller
 {
@@ -54,8 +55,12 @@ class LoginController extends Controller
                 'password.required' => '請輸入密碼'
             ]);
 
-            // 檢查是否為管理員登入
+            // 檢查用戶是否存在
+            $user = null;
             if ($request->email === 'admin') {
+                $user = User::where('email', 'admin')
+                         ->where('role', 'admin')
+                         ->first();
                 $credentials = [
                     'email' => $request->email,
                     'password' => $request->password,
@@ -68,7 +73,22 @@ class LoginController extends Controller
                         'email' => ['請輸入有效的電子郵件地址']
                     ]);
                 }
+                $user = User::where('email', $request->email)->first();
                 $credentials = $request->only('email', 'password');
+            }
+
+            // 檢查用戶是否存在
+            if (!$user) {
+                throw ValidationException::withMessages([
+                    'email' => ['找不到此電子郵件的用戶']
+                ]);
+            }
+
+            // 檢查用戶密碼是否為 null
+            if ($user->password === null) {
+                // 將用戶 ID 存入 session 以便設置密碼頁面使用
+                session(['setup_password_user_id' => $user->id]);
+                return redirect()->route('password.setup');
             }
 
             // 檢查登入次數限制
@@ -91,7 +111,6 @@ class LoginController extends Controller
             // 登入成功
             $this->limiter()->clear($this->throttleKey($request));
             return $this->sendLoginResponse($request);
-
         } catch (ValidationException $e) {
             return redirect()
                 ->back()

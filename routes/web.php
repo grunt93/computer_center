@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\ProfileController;
+use App\Http\Controllers\Auth\PasswordSetupController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DiskReplacementController;
@@ -12,6 +13,12 @@ Route::get('/', function () {
 });
 
 Auth::routes(['register' => false]);
+
+// 密碼設置路由
+Route::controller(PasswordSetupController::class)->group(function () {
+    Route::get('/password/setup', 'showSetupForm')->name('password.setup');
+    Route::post('/password/setup', 'setup')->name('password.setup.submit');
+});
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
