@@ -88,7 +88,7 @@
                         @endauth
                         
                         @auth
-                            @if(Auth::user()->email !== 'admin')
+                            @if(Auth::user()->role !== 'admin')
                             <div class="col-md-6 mb-4">
                                 <div class="card h-100">
                                     <div class="card-body text-center p-4">

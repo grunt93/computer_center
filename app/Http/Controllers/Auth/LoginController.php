@@ -48,33 +48,29 @@ class LoginController extends Controller
         try {
             // 驗證輸入
             $request->validate([
-                'email' => ['required'],
+                'email' => ['required', 'string'],
                 // 不再要求密碼必填
                 'password' => ['nullable', 'string']
             ], [
-                'email.required' => '請輸入電子郵件',
+                'email.required' => '請輸入電子郵件或學號',
             ]);
 
             // 查找用戶
             $user = null;
-            if ($request->email === 'admin') {
-                $user = User::where('email', 'admin')
-                         ->where('role', 'admin')
-                         ->first();
-            } else {
-                // 一般用戶驗證 email 格式
-                if (!filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
-                    throw ValidationException::withMessages([
-                        'email' => ['請輸入有效的電子郵件地址']
-                    ]);
-                }
+            
+            // 判斷輸入是電子郵件還是學號
+            if (filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
+                // 是電子郵件格式
                 $user = User::where('email', $request->email)->first();
+            } else {
+                // 不是電子郵件格式，視為學號
+                $user = User::where('student_id', $request->email)->first();
             }
 
             // 檢查用戶是否存在
             if (!$user) {
                 throw ValidationException::withMessages([
-                    'email' => ['找不到此電子郵件的用戶']
+                    'email' => ['找不到此帳號的用戶']
                 ]);
             }
 
@@ -102,8 +98,16 @@ class LoginController extends Controller
                 ]);
             }
 
-            // 嘗試登入
-            if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+            // 嘗試登入（使用電子郵件或學號）
+            $credentials = [];
+            
+            if (filter_var($request->email, FILTER_VALIDATE_EMAIL)) {
+                $credentials = ['email' => $request->email, 'password' => $request->password];
+            } else {
+                $credentials = ['student_id' => $request->email, 'password' => $request->password];
+            }
+            
+            if (!Auth::attempt($credentials, $request->boolean('remember'))) {
                 $this->limiter()->hit($this->throttleKey($request));
                 throw ValidationException::withMessages([
                     'email' => ['帳號或密碼錯誤']

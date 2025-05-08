@@ -286,11 +286,9 @@
 
                                 <div class="dropdown-menu dropdown-menu-end animate__animated animate__fadeIn"
                                     aria-labelledby="navbarDropdown">
-                                    @if(Auth::user()->email !== 'admin')
                                         <a class="dropdown-item" href="{{ route('profile.show') }}">
                                             <i class="bi bi-person me-2"></i> 個人資料
                                         </a>
-                                    @endif
                                     @if(Auth::user()->role === 'admin')
                                         <a class="dropdown-item" href="{{ route('profile.users.index') }}">
                                             <i class="bi bi-people me-2"></i> 用戶管理

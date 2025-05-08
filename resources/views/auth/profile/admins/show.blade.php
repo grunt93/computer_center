@@ -31,7 +31,7 @@
                         <p class="form-control-static">{{ $user->email }}</p>
                     </div>
 
-                    @if($user->email !== 'admin')
+                    @if($user->role !== 'admin')
                     <div class="d-flex gap-2">
                         <a href="{{ route('profile.users.edit', $user) }}" class="btn btn-primary">編輯資料</a>
                         

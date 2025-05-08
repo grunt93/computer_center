@@ -88,7 +88,7 @@
                                         @endif
                                     </td>
                                     <td data-label="操作">
-                                        @if($user->email !== 'admin' && $user->id !== Auth::id())
+                                        @if($user->role !== 'admin' && $user->id !== Auth::id())
                                             <a href="{{ route('profile.users.show', $user) }}" class="btn btn-sm btn-info mb-1">
                                                 <i class="bi bi-eye me-1"></i>查看
                                             </a>
