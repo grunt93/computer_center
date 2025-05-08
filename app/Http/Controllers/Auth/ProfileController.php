@@ -145,9 +145,21 @@ class ProfileController extends Controller
     }
 
     // 管理員方法
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::paginate(10);
+        $query = User::query();
+        
+        // 如果有姓名搜尋關鍵字，則進行過濾
+        if ($request->has('name') && !empty($request->name)) {
+            $query->where('name', 'like', '%' . $request->name . '%');
+        }
+        
+        // 如果有學號搜尋關鍵字，則進行過濾
+        if ($request->has('student_id') && !empty($request->student_id)) {
+            $query->where('student_id', 'like', '%' . $request->student_id . '%');
+        }
+        
+        $users = $query->paginate(10)->withQueryString();
         return view('auth.profile.admins.index', compact('users'));
     }
 

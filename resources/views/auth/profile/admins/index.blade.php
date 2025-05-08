@@ -63,6 +63,29 @@
                         </div>
                     @endif
 
+                    <!-- 搜尋表單 -->
+                    <form action="{{ route('profile.users.index') }}" method="GET" class="mb-4">
+                        <div class="row g-3">
+                            <div class="col-md-5">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                    <input type="text" name="name" class="form-control" placeholder="搜尋姓名..." value="{{ request('name') }}">
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                                    <input type="text" name="student_id" class="form-control" placeholder="搜尋學號..." value="{{ request('student_id') }}">
+                                </div>
+                            </div>
+                            <div class="col-md-2 d-grid">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-search me-1"></i>搜尋
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
                     <div class="table-responsive">
                         <table class="table table-hover table-responsive-sm">
                             <thead>
