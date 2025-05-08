@@ -37,7 +37,7 @@ Route::controller(ProfileController::class)
         Route::delete('/', 'deleteAccount')->name('delete');
 
         // 管理員路由
-        Route::middleware(['admin'])->group(function () {
+        Route::middleware(['super_admin'])->group(function () {
             Route::get('/users', 'index')->name('users.index');
             
             // 將具體路由放在參數化路由前面

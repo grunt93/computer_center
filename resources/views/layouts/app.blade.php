@@ -276,7 +276,6 @@
                                 </li>
                             @endif
 
-                            {{-- 已移除註冊功能，改為由管理員建立用戶 --}}
                         @else
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
@@ -289,7 +288,7 @@
                                         <a class="dropdown-item" href="{{ route('profile.show') }}">
                                             <i class="bi bi-person me-2"></i> 個人資料
                                         </a>
-                                    @if(Auth::user()->role === 'admin')
+                                    @if(Auth::user()->role === 'super_admin')
                                         <a class="dropdown-item" href="{{ route('profile.users.index') }}">
                                             <i class="bi bi-people me-2"></i> 用戶管理
                                         </a>

@@ -12,6 +12,27 @@ use Illuminate\Support\Facades\DB;
 
 class ProfileController extends Controller
 {
+    public function __construct()
+    {
+        // 所有用戶方法需要登入
+        $this->middleware('auth');
+        
+        // 用戶管理功能只有超級管理員可以訪問
+        $this->middleware(function ($request, $next) {
+            if (in_array($request->route()->getName(), [
+                'profile.users.index', 'profile.users.show', 'profile.users.edit',
+                'profile.users.update', 'profile.users.update.email', 'profile.users.update.password',
+                'profile.users.delete', 'profile.users.create', 'profile.users.store'
+            ])) {
+                if (Auth::user()->role !== User::ROLE_SUPER_ADMIN) {
+                    abort(403, '只有超級管理員可以訪問用戶管理功能');
+                }
+            }
+            
+            return $next($request);
+        });
+    }
+
     public function show()
     {
         return view('auth.profile.show', [
@@ -140,17 +161,18 @@ class ProfileController extends Controller
         return view('auth.profile.admins.edit', compact('user'));
     }
 
-    // 在 updateUser 方法中加入檢查
+    // 在 updateUser 方法中修改檢查邏輯
     public function updateUser(Request $request, User $user)
     {
-        if ($user->email === 'admin') {
-            abort(403, '無法修改admin管理員資料');
+        // 修正邏輯錯誤：正確檢查是否為超級管理員
+        if (Auth::user()->role !== User::ROLE_SUPER_ADMIN) {
+            abort(403, '只有超級管理員可以修改用戶資料');
         }
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'student_id' => ['required', 'string', 'max:255'],
-            'role' => ['required', 'string', 'in:staff,admin']  
+            'role' => ['required', 'string', 'in:staff,admin,super_admin']  
         ], [
             'name.required' => '請輸入姓名',
             'name.max' => '姓名不能超過 255 個字元',
@@ -168,11 +190,12 @@ class ProfileController extends Controller
             ->with('status', '用戶資料已更新成功！');
     }
 
-    // 在 updateUserEmail 方法中加入檢查
+    // 在 updateUserEmail 方法中更新檢查邏輯
     public function updateUserEmail(Request $request, User $user)
     {
-        if ($user->role === 'admin') {
-            abort(403, '無法修改管理員資料');
+        // 改為檢查是否為超級管理員
+        if (Auth::user()->role !== User::ROLE_SUPER_ADMIN) {
+            abort(403, '只有超級管理員可以修改用戶電子郵件');
         }
 
         $validated = $request->validate([
@@ -192,11 +215,12 @@ class ProfileController extends Controller
             ->with('status', '用戶電子郵件已更新成功！');
     }
 
-    // 在 updateUserPassword 方法中加入檢查
+    // 在 updateUserPassword 方法中更新檢查邏輯
     public function updateUserPassword(Request $request, User $user)
     {
-        if ($user->role === 'admin') {
-            abort(403, '無法修改管理員資料');
+        // 改為檢查是否為超級管理員
+        if (Auth::user()->role !== User::ROLE_SUPER_ADMIN) {
+            abort(403, '只有超級管理員可以重設用戶密碼');
         }
 
         $validated = $request->validate([
@@ -215,11 +239,17 @@ class ProfileController extends Controller
             ->with('status', '用戶密碼已更新成功！');
     }
 
-    // 在 deleteUser 方法中加入檢查
+    // 在 deleteUser 方法中更新檢查邏輯
     public function deleteUser(User $user)
     {
-        if ($user->role === 'admin') {
-            abort(403, '無法刪除管理員帳號');
+        // 改為檢查是否為超級管理員
+        if (Auth::user()->role !== User::ROLE_SUPER_ADMIN) {
+            abort(403, '只有超級管理員可以刪除用戶帳號');
+        }
+
+        // 防止刪除自己的帳號
+        if ($user->id === Auth::id()) {
+            abort(403, '無法刪除自己的帳號');
         }
 
         $user->delete();
@@ -245,7 +275,7 @@ class ProfileController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'student_id' => ['required', 'string', 'max:10', 'unique:users,student_id'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'role' => ['required', 'string', 'in:admin,staff'],
+            'role' => ['required', 'string', 'in:admin,staff,super_admin'],
         ];
         
         $messages = [

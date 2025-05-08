@@ -17,7 +17,7 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check() || Auth::user()->role !== 'admin') {
-            abort(403, '您沒有管理員權限');
+            abort(403, '您沒有權限訪問此頁面');
         }
 
         return $next($request);

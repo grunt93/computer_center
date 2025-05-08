@@ -81,14 +81,16 @@
                                     <td data-label="學號">{{ $user->student_id }}</td>
                                     <td data-label="電子郵件">{{ $user->email }}</td>
                                     <td data-label="角色">
-                                        @if($user->role === 'admin')
+                                        @if($user->role === 'super_admin')
+                                            <span class="badge bg-primary">超級管理員</span>
+                                        @elseif($user->role === 'admin')
                                             <span class="badge bg-danger">管理員</span>
                                         @else
                                             <span class="badge bg-info">職員</span>
                                         @endif
                                     </td>
                                     <td data-label="操作">
-                                        @if($user->role !== 'admin' && $user->id !== Auth::id())
+                                        @if(Auth::user()->role === 'super_admin' && $user->id !== Auth::id())
                                             <a href="{{ route('profile.users.show', $user) }}" class="btn btn-sm btn-info mb-1">
                                                 <i class="bi bi-eye me-1"></i>查看
                                             </a>

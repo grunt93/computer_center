@@ -14,6 +14,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     // 定義可用的角色
+    const ROLE_SUPER_ADMIN = 'super_admin';
     const ROLE_ADMIN = 'admin';
     const ROLE_STAFF = 'staff';
     
