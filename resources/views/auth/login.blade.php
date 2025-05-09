@@ -25,7 +25,7 @@
                                     <span class="input-group-text"><i class="bi bi-at"></i></span>
                                     <input id="email" type="text" class="form-control @error('email') is-invalid @enderror" 
                                            name="email" value="{{ old('email') }}" required autofocus 
-                                           placeholder="請輸入電子郵件">
+                                           placeholder="請輸入電子郵件或學號">
                                     @error('email')
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $message }}</strong>
