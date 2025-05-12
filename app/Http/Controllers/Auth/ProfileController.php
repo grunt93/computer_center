@@ -304,8 +304,8 @@ class ProfileController extends Controller
         // 學號轉為大寫
         $studentId = strtoupper($request->student_id);
         
-        // 預設email為 '學號' + '@gapps.uch.edu.tw'
-        $defaultEmail = $studentId . '@gapps.uch.edu.tw';
+        // 預設email為 '學號' + '@gapps.uch.edu.tw' 並轉為小寫
+        $defaultEmail = strtolower($studentId . '@gapps.uch.edu.tw');
         
         // 使用 DB 原始方法插入資料，預設email為學號@gapps.uch.edu.tw
         $userId = DB::table('users')->insertGetId([
