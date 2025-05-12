@@ -10,7 +10,7 @@ class DiskReplacement extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'user_id',
+        'user_name',
         'classroom_code',
         'issue',
         'replaced_at',
@@ -23,10 +23,8 @@ class DiskReplacement extends Model
         'disk_replaced' => 'boolean'
     ];
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+    // 移除 user 關聯方法，因為不再使用 user_id
+    // 改為直接儲存 user_name
 
     public function classroom(): BelongsTo
     {

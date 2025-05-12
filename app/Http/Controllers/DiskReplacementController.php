@@ -14,7 +14,7 @@ class DiskReplacementController extends Controller
 {
     public function index(Request $request)
     {
-        $query = DiskReplacement::with(['user', 'classroom']);
+        $query = DiskReplacement::with(['classroom']);
         
         if ($request->has('smtr') && $request->smtr) {
             $query->where('smtr', $request->smtr);
@@ -29,9 +29,7 @@ class DiskReplacementController extends Controller
         }
         
         if ($request->filled('user_name')) {
-            $query->whereHas('user', function($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->user_name . '%');
-            });
+            $query->where('user_name', 'like', '%' . $request->user_name . '%');
         }
         
         if ($request->filled('start_date')) {
@@ -65,7 +63,7 @@ class DiskReplacementController extends Controller
         ]);
 
         $diskReplacement = new DiskReplacement();
-        $diskReplacement->user_id = Auth::user()->id;
+        $diskReplacement->user_name = Auth::user()->name; // 儲存使用者名稱而非 ID
         $diskReplacement->classroom_code = $request->input('classroom_code');
         
         $diskReplacement->issue = $request->input('issue');

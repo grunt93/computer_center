@@ -191,7 +191,7 @@
                                 </td>
                                 <td data-label="更換日期">{{ $replacement->replaced_at->format('Y-m-d H:i') }}</td>
                                 <td data-label="學期">{{ $replacement->smtr }}</td>
-                                <td data-label="操作人員">{{ $replacement->user->name ?? '未知' }}</td>
+                                <td data-label="操作人員">{{ $replacement->user_name }}</td>
                                 <td data-label="問題描述">
                                     @if($replacement->issue)
                                         <button type="button" class="btn btn-sm btn-info view-issue w-100 w-md-auto" 
