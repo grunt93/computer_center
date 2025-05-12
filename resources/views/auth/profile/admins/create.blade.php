@@ -39,16 +39,6 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="email" class="form-label">電子郵件</label>
-                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required>
-                            @error('email')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
                             <label for="role" class="form-label">角色</label>
                             <select id="role" class="form-select @error('role') is-invalid @enderror" name="role" required>
                                 <option value="staff" {{ old('role') === 'staff' ? 'selected' : '' }}>職員</option>
@@ -63,7 +53,7 @@
                         </div>
 
                         <div class="alert alert-info">
-                            <i class="bi bi-info-circle me-2"></i>用戶將在首次登入時設置密碼。
+                            <i class="bi bi-info-circle me-2"></i>用戶將在首次登入時設置密碼。預設電子郵件將設為：學號@gapps.uch.edu.tw
                             <input type="hidden" name="skip_password" value="1">
                         </div>
 

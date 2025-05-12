@@ -55,7 +55,6 @@ class LoginController extends Controller
                 'email.required' => '請輸入電子郵件或學號',
             ]);
 
-            // 查找用戶
             $user = null;
             
             // 判斷輸入是電子郵件還是學號
@@ -74,8 +73,7 @@ class LoginController extends Controller
                 ]);
             }
 
-            // 檢查用戶是否需要設置密碼 (空白密碼)
-            // 改善檢測邏輯，同時處理 null 和空字串的情況
+            // 檢查用戶是否需要設置密碼（只檢查密碼是否為空）
             if ($user->password === null || $user->password === '' || strlen(trim($user->password)) === 0) {
                 // 將用戶 ID 存入 session 以便設置密碼頁面使用
                 session(['setup_password_user_id' => $user->id]);

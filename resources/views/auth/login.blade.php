@@ -17,7 +17,7 @@
 
                         <div class="row mb-4">
                             <label for="email" class="col-md-4 col-form-label text-md-end">
-                                <i class="bi bi-envelope me-1"></i>電子郵件
+                                <i class="bi bi-envelope me-1"></i>學號
                             </label>
 
                             <div class="col-md-6">
@@ -32,6 +32,9 @@
                                         </span>
                                     @enderror
                                 </div>
+                                <small class="form-text text-muted mt-1">
+                                    學號開頭英文大小寫都OK
+                                </small>
                             </div>
                         </div>
 

@@ -32,7 +32,10 @@ class PasswordSetupController extends Controller
             return view('auth.passwords.error', ['message' => '找不到使用者資料，請重新登入']);
         }
 
-        return view('auth.passwords.setup', ['email' => $user->email]);
+        // 如果用戶沒有設置email，預設使用學號@gapps.uch.edu.tw
+        $defaultEmail = $user->email ?? ($user->student_id . '@gapps.uch.edu.tw');
+
+        return view('auth.passwords.setup', ['email' => $defaultEmail]);
     }
 
     /**
@@ -51,29 +54,38 @@ class PasswordSetupController extends Controller
 
         $user = User::find(session('setup_password_user_id'));
         
-        // 修正判斷條件，檢查用戶是否存在且密碼是否為空（無論是 null 還是空字串）
+        // 檢查用戶是否存在
         if (!$user) {
             session()->forget('setup_password_user_id');
             return redirect()->route('login')
                 ->with('error', '找不到使用者資料，請重新登入');
         }
         
-        // 驗證密碼
+        // 驗證輸入
         $request->validate([
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ], [
+            'email.required' => '請輸入電子郵件',
+            'email.email' => '請輸入有效的電子郵件地址',
+            'email.max' => '電子郵件不能超過 255 個字元',
+            'email.unique' => '此電子郵件已被使用',
             'password.required' => '請輸入密碼',
             'password.confirmed' => '兩次輸入的密碼不相符',
             'password.min' => '密碼至少需要 8 個字元'
         ]);
 
-        // 明確使用 Hash 加密密碼並加入除錯輸出
+        // 使用 Hash 加密密碼
         $hashedPassword = Hash::make($request->password);
         
-        // 直接使用 Query Builder 更新密碼，避免 Eloquent 模型可能的問題
+        // 直接使用 Query Builder 更新密碼與電子郵件
         $updated = DB::table('users')
             ->where('id', $user->id)
-            ->update(['password' => $hashedPassword, 'updated_at' => now()]);
+            ->update([
+                'password' => $hashedPassword, 
+                'email' => $request->email,
+                'updated_at' => now()
+            ]);
         
         // 清除 session 中的用戶 ID
         session()->forget('setup_password_user_id');
@@ -81,7 +93,7 @@ class PasswordSetupController extends Controller
         // 如果更新失敗，返回錯誤
         if (!$updated) {
             return redirect()->route('login')
-                ->with('error', '密碼設置失敗，請聯絡系統管理員');
+                ->with('error', '設置失敗，請聯絡系統管理員');
         }
 
         // 重新查詢用戶以獲取最新資料
@@ -91,6 +103,6 @@ class PasswordSetupController extends Controller
         Auth::login($refreshedUser);
 
         return redirect()->route('home')
-            ->with('success', '密碼設置成功！您已成功登入系統。');
+            ->with('success', '個人資料設置成功！您已成功登入系統。');
     }
 }

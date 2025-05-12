@@ -286,7 +286,6 @@ class ProfileController extends Controller
         $validation = [
             'name' => ['required', 'string', 'max:255'],
             'student_id' => ['required', 'string', 'max:10', 'unique:users,student_id'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'role' => ['required', 'string', 'in:admin,staff,super_admin'],
         ];
         
@@ -296,28 +295,30 @@ class ProfileController extends Controller
             'student_id.required' => '請輸入學號',
             'student_id.max' => '學號不能超過 10 個字元',
             'student_id.unique' => '此學號已被使用',
-            'email.required' => '請輸入電子郵件',
-            'email.email' => '請輸入有效的電子郵件地址',
-            'email.max' => '電子郵件不能超過 255 個字元',
-            'email.unique' => '此電子郵件已被使用',
             'role.required' => '請選擇角色',
             'role.in' => '無效的角色選擇'
         ];
         
         $request->validate($validation, $messages);
         
-        // 使用 DB 原始方法插入資料，以避開 SQL NOT NULL 限制
+        // 學號轉為大寫
+        $studentId = strtoupper($request->student_id);
+        
+        // 預設email為 '學號' + '@gapps.uch.edu.tw'
+        $defaultEmail = $studentId . '@gapps.uch.edu.tw';
+        
+        // 使用 DB 原始方法插入資料，預設email為學號@gapps.uch.edu.tw
         $userId = DB::table('users')->insertGetId([
             'name' => $request->name,
-            'email' => $request->email,
-            'student_id' => strtoupper($request->student_id),
+            'email' => $defaultEmail, 
+            'student_id' => $studentId,
             'role' => $request->role,
-            'password' => '', // 使用空字串代替 NULL
+            'password' => '',
             'created_at' => now(),
             'updated_at' => now()
         ]);
 
         return redirect()->route('profile.users.index')
-            ->with('status', '新用戶已成功建立！用戶首次登入時需要設置密碼。');
+            ->with('status', '新用戶已成功建立！用戶首次登入時需要設置密碼。預設電子郵件為：' . $defaultEmail);
     }
 }
