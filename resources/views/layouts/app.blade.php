@@ -245,7 +245,7 @@
                                         class="bi bi-display me-1"></i> 教室狀態</a>
                             </li>
                             @auth
-                                @if(Auth::user()->role === 'admin')
+                                @if(Auth::user()->role === 'admin' || Auth::user()->role == 'super_admin')
                                     <li class="nav-item">
                                         <a class="nav-link" href="{{ route('classroom.refresh.form') }}"><i
                                                 class="bi bi-arrow-clockwise me-1"></i> 課表更新</a>
