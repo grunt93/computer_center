@@ -54,7 +54,7 @@
                         </div>
                         
                         @auth
-                            @if(Auth::user()->role === 'admin')
+                            @if(Auth::user()->role === 'admin' || Auth::user()->role == 'super_admin')
                             <div class="col-md-6 mb-4">
                                 <div class="card h-100">
                                     <div class="card-body text-center p-4">
