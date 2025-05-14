@@ -177,6 +177,8 @@
                                     <i class="bi bi-megaphone me-2 text-primary"></i>最新公告
                                 </h3>
 
+                                <img src="{{ asset('image/0.png') }}" alt="我們敬愛的學長" style="width: 100%; height: auto; border-radius: 0.5rem; margin-bottom: 1rem;">
+
                                 <div class="announcement-card p-3 mb-3">
                                     <div class="announcement-header">
                                         <div>
