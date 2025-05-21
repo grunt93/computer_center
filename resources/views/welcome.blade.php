@@ -199,28 +199,14 @@
 
                                             <li>控制設備開啟投影機</li>
 
-                                            <li>修改電腦名稱
+                                            <li>開啟AutoSetupTool程序
                                                 <ul>
-                                                    <li>本機</li>
-                                                    <li>內容</li>
-                                                    <li>重新命名此電腦</li>
+                                                    <li>開啟桌面上的User資料夾</li>
+                                                    <li>找到AutoSetupTool資料夾</li>
+                                                    <li>開啟run檔案</li>
                                                 </ul>
                                             </li>
-
-                                            <li>切同步顯示
-                                                <ul>
-                                                    <li>快捷鍵win+p</li>
-                                                </ul>
-                                            </li>
-
-                                            <li>解析度: 1280*800
-                                                <ul>
-                                                    <li>設定</li>
-                                                    <li>系統</li>
-                                                    <li>顯示器</li>
-                                                    <li>顯示器解析度</li>
-                                                </ul>
-                                            </li>
+                                            
                                             <li>調整觸控
                                                 <ul>
                                                     <li>控制台</li>
@@ -229,6 +215,7 @@
                                                     <li>校正螢幕以進行手寫筆或觸控輸入</li>
                                                 </ul>
                                             </li>
+
                                             <li>設定還原
                                                 <ul>
                                                     <li>右下角(箭頭)</li>
