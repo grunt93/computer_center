@@ -52,8 +52,25 @@ class DiskReplacementController extends Controller
         $buildings = Classroom::select(DB::raw('SUBSTRING(code, 1, 1) as building'))
                     ->distinct()
                     ->pluck('building');
+    
+        // 為編輯表單準備所需資料，排除指定教室
+        $classrooms = Classroom::whereNotIn('code', ['A220', 'A221', 'A319'])
+                    ->orderBy('code')
+                    ->get();
+        $users = User::orderBy('name')->pluck('name');
         
-        return view('disk_placement.index', compact('replacements', 'semesters', 'buildings', 'request'));
+        // 檢查用戶是否為管理員或超級管理員
+        $canManage = Auth::check() && (Auth::user()->role === 'admin' || Auth::user()->role === 'super_admin');
+        
+        return view('disk_placement.index', compact(
+            'replacements', 
+            'semesters', 
+            'buildings', 
+            'request',
+            'classrooms',
+            'users',
+            'canManage'
+        ));
     }
 
     public function store(Request $request)
@@ -90,5 +107,51 @@ class DiskReplacementController extends Controller
 
         return redirect()->route('classroom.status', $queryParams)
             ->with('success', '硬碟更換記錄已儲存！');
+    }
+    
+    /**
+     * 獲取編輯硬碟更換記錄的資料
+     */
+    public function edit(DiskReplacement $diskReplacement)
+    {
+        // 返回格式化的日期，方便前端顯示
+        $diskReplacement->replaced_at_formatted = $diskReplacement->replaced_at->format('Y-m-d\TH:i');
+        
+        return response()->json($diskReplacement);
+    }
+
+    /**
+     * 更新硬碟更換記錄
+     */
+    public function update(Request $request, DiskReplacement $diskReplacement)
+    {
+        $request->validate([
+            'classroom_code' => 'required|exists:classrooms,code',
+            'replaced_at' => 'required|date',
+            'user_name' => 'required|string|max:255',
+            'smtr' => 'required|string|max:10',
+        ]);
+
+        $diskReplacement->classroom_code = $request->input('classroom_code');
+        $diskReplacement->issue = $request->input('issue');
+        $diskReplacement->replaced_at = $request->input('replaced_at');
+        $diskReplacement->user_name = $request->input('user_name');
+        $diskReplacement->smtr = $request->input('smtr');
+        $diskReplacement->disk_replaced = $request->boolean('disk_replaced');
+        $diskReplacement->save();
+
+        return redirect()->route('disk-replacement.index')
+            ->with('success', '硬碟更換記錄已成功更新！');
+    }
+
+    /**
+     * 刪除硬碟更換記錄
+     */
+    public function destroy(DiskReplacement $diskReplacement)
+    {
+        $diskReplacement->delete();
+        
+        return redirect()->route('disk-replacement.index')
+            ->with('success', '硬碟更換記錄已成功刪除！');
     }
 }

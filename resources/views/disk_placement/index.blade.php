@@ -106,6 +106,20 @@
         </div>
         
         <div class="card-body">
+            @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle me-1"></i>{{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            @endif
+            
+            @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle me-1"></i>{{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            @endif
+            
             <div class="card mb-4 filter-card" id="filterCard">
                 <div class="card-body">
                     <form action="{{ route('disk-replacement.index') }}" method="GET" class="filter-form-mobile">
@@ -170,6 +184,9 @@
                             <th scope="col"><i class="bi bi-calendar3 me-1"></i>學期</th>
                             <th scope="col"><i class="bi bi-person me-1"></i>操作人員</th>
                             <th scope="col"><i class="bi bi-chat-left-text me-1"></i>問題描述</th>
+                            @if(isset($canManage) && $canManage)
+                            <th scope="col"><i class="bi bi-gear me-1"></i>操作</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -207,10 +224,21 @@
                                         </span>
                                     @endif
                                 </td>
+                                @if(isset($canManage) && $canManage)
+                                <td data-label="操作" class="text-nowrap">
+                                    <button type="button" class="btn btn-sm btn-warning me-1" onclick="openEditModal({{ $replacement->id }})">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger" 
+                                            onclick="confirmDelete({{ $replacement->id }}, '{{ $replacement->classroom_code }}')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                                @endif
                             </tr>
                         @empty
                             <tr class="no-records-row">
-                                <td colspan="6" class="text-center py-4">
+                                <td colspan="{{ isset($canManage) && $canManage ? 7 : 6 }}" class="text-center py-4">
                                     <div class="alert alert-info mb-0">
                                         <i class="bi bi-info-circle me-2"></i>沒有找到相關記錄
                                     </div>
@@ -229,6 +257,110 @@
         </div>
     </div>
 </div>
+
+@if(isset($canManage) && $canManage)
+<!-- 編輯硬碟更換記錄模態框 -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">
+                    <i class="bi bi-pencil-square me-2"></i>編輯硬碟更換記錄
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editForm" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="edit_classroom_code" class="form-label">教室代碼 <span class="text-danger">*</span></label>
+                            <select id="edit_classroom_code" name="classroom_code" class="form-select" required>
+                                <option value="">選擇教室</option>
+                                @foreach($classrooms as $classroom)
+                                    <option value="{{ $classroom->code }}">
+                                        {{ $classroom->code }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="edit_replaced_at" class="form-label">更換日期 <span class="text-danger">*</span></label>
+                            <input type="datetime-local" id="edit_replaced_at" name="replaced_at" class="form-control" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="edit_user_name" class="form-label">操作人員 <span class="text-danger">*</span></label>
+                            <select id="edit_user_name" name="user_name" class="form-select" required>
+                                <option value="">選擇操作人員</option>
+                                @foreach($users as $user)
+                                    <option value="{{ $user }}">{{ $user }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="edit_smtr" class="form-label">學期 <span class="text-danger">*</span></label>
+                            <select id="edit_smtr" name="smtr" class="form-select" required>
+                                <option value="">選擇學期</option>
+                                @foreach($semesters as $semester)
+                                    <option value="{{ $semester }}">{{ $semester }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="edit_disk_replaced" name="disk_replaced">
+                        <label class="form-check-label" for="edit_disk_replaced">
+                            硬碟已更換
+                        </label>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="edit_issue" class="form-label">問題描述</label>
+                        <textarea id="edit_issue" name="issue" class="form-control" rows="5"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save me-1"></i>更新
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 刪除確認模態框 -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">確認刪除</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>確定要刪除教室 <span id="deleteClassroomCode" class="fw-bold"></span> 的硬碟更換記錄嗎？</p>
+                <p class="text-danger"><small>此操作無法復原</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <form id="deleteForm" action="" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">確認刪除</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 
 <!-- 問題描述模態框 -->
 <div class="modal fade" id="issueModal" tabindex="-1" aria-labelledby="issueModalLabel" aria-hidden="true">
@@ -312,6 +444,52 @@ function toggleFilterCard() {
         filterCard.style.display = 'none';
     }
 }
+
+@if(isset($canManage) && $canManage)
+// 開啟編輯模態框
+function openEditModal(id) {
+    // 重置表單
+    document.getElementById('editForm').reset();
+    
+    // 設置表單動作
+    document.getElementById('editForm').action = '{{ url("disk-replacement") }}/' + id;
+    
+    // 通過 AJAX 獲取記錄數據
+    fetch('{{ url("disk-replacement") }}/' + id + '/edit')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('獲取數據失敗: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // 填充表單
+            document.getElementById('edit_classroom_code').value = data.classroom_code;
+            document.getElementById('edit_replaced_at').value = data.replaced_at_formatted;
+            document.getElementById('edit_user_name').value = data.user_name;
+            document.getElementById('edit_smtr').value = data.smtr;
+            document.getElementById('edit_disk_replaced').checked = data.disk_replaced;
+            document.getElementById('edit_issue').value = data.issue || '';
+            
+            // 顯示模態框
+            var editModal = new bootstrap.Modal(document.getElementById('editModal'));
+            editModal.show();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('獲取記錄數據失敗: ' + error.message);
+        });
+}
+
+// 確認刪除函數
+function confirmDelete(id, classroomCode) {
+    document.getElementById('deleteClassroomCode').textContent = classroomCode;
+    document.getElementById('deleteForm').action = '{{ url("disk-replacement") }}/' + id;
+    
+    var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    deleteModal.show();
+}
+@endif
 </script>
 @endpush
 @endsection
