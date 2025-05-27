@@ -196,7 +196,7 @@
                                         <ol>
                                             <li>切換僅電腦螢幕
                                                 <ul>
-                                                    <li>win(ctrl右邊)+P
+                                                    <li>win(ctrl右邊) + P
                                                         <img src="{{ asset('image/winBtn.jpg') }}"
                                                             style="width: 100px; height: 50px;">
                                                     </li>
@@ -274,6 +274,33 @@
                                                 </ul>
                                             </li>
                                         </ol>
+                                    </div>
+                                </div>
+
+                                <!-- EVO還原卡設定 -->
+                                <div class="announcement-card p-3 mb-3">
+                                    <div class="announcement-header">
+                                        <div>
+                                            <h4 class="announcement-title">
+                                                EVO還原卡設定
+                                            </h4>
+                                        </div>
+                                        <div class="announcement-date">
+                                            <i class="bi bi-calendar3 me-1"></i>2025-05-27
+                                        </div>
+                                    </div>
+                                    <div class="announcement-content">
+                                        <ul>
+                                            <li>快捷鍵(跑完BIOS後出現選擇系統選項即可按下快捷鍵)
+                                                <ul>
+                                                    <li>F10(開啟還原卡設定，若要設定發送端也在此處設置)</li> 
+                                                    <li>F9(開啟接收端)</li>   
+                                                    <li>ctrl + enter(以調適模式進入系統，下次開機將以此次調適為主)</li>
+                                                    <li>enter(以還原模式進入系統)</li>
+                                                </ul>
+                                            </li> 
+                                        </ul>
+                                        <p class="mt-2">其他詳情請查詢<a href="https://www.teamsoftex.com/service_tw_6.php" target="_blank" class="text-primary">(EVO system 群準科技官網)</a></p>
                                     </div>
                                 </div>
 
