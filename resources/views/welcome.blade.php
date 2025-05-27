@@ -169,6 +169,9 @@
         <!-- 公告區域 -->
         <section class="py-4">
             <div class="container">
+                <img src="{{ asset('image/0.png') }}" alt="我們敬愛的學長"
+                    style="width: 100%; height: auto; border-radius: 0.5rem; margin-bottom: 1rem;">
+
                 <div class="row">
                     <div class="col-12">
                         <div class="card announcement-section animate-fade-up">
@@ -177,8 +180,42 @@
                                     <i class="bi bi-megaphone me-2 text-primary"></i>最新公告
                                 </h3>
 
-                                <img src="{{ asset('image/0.png') }}" alt="我們敬愛的學長" style="width: 100%; height: auto; border-radius: 0.5rem; margin-bottom: 1rem;">
+                                <!-- 投影機藍屏處理 -->
+                                <div class="announcement-card p-3 mb-3">
+                                    <div class="announcement-header">
+                                        <div>
+                                            <h4 class="announcement-title">
+                                                投影機藍屏處理(無訊號)
+                                            </h4>
+                                        </div>
+                                        <div class="announcement-date">
+                                            <i class="bi bi-calendar3 me-1"></i>2025-05-27
+                                        </div>
+                                    </div>
+                                    <div class="announcement-content">
+                                        <ol>
+                                            <li>切換僅電腦螢幕
+                                                <ul>
+                                                    <li>win(ctrl右邊)+P
+                                                        <img src="{{ asset('image/winBtn.jpg') }}"
+                                                            style="width: 100px; height: 50px;">
+                                                    </li>
+                                                    <li>第一個選項(僅電腦螢幕)</li>
+                                                </ul>
+                                            </li>
 
+                                            <li>切換同步顯示
+                                                <ul>
+                                                    <li>第二個選項(同步顯示)</li>
+                                                </ul>
+                                            </li>
+
+                                            <li>等待數秒(若無恢復請確認講桌機內部排線)</li>
+                                        </ol>
+                                    </div>
+                                </div>
+
+                                <!-- 更換硬碟軟體步驟 -->
                                 <div class="announcement-card p-3 mb-3">
                                     <div class="announcement-header">
                                         <div>
@@ -206,7 +243,7 @@
                                                     <li>開啟run檔案</li>
                                                 </ul>
                                             </li>
-                                            
+
                                             <li>調整觸控
                                                 <ul>
                                                     <li>控制台</li>
@@ -237,8 +274,13 @@
                                                 </ul>
                                             </li>
                                         </ol>
-                                        <p class="mb-0">如有任何使用問題，請聯繫分機3802或Line群組</p>
                                     </div>
+                                </div>
+
+                                <!-- 整合的聯絡資訊 -->
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle-fill me-2"></i>
+                                    <strong>如有任何使用問題，請聯繫分機3802或Line群組</strong>
                                 </div>
                             </div>
                         </div>
