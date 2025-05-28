@@ -16,7 +16,7 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check() || Auth::user()->role !== 'admin') {
+        if (!Auth::check() || (Auth::user()->role !== 'admin' && Auth::user()->role !== 'super_admin')) {
             abort(403, '您沒有權限訪問此頁面');
         }
 

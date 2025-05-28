@@ -81,11 +81,4 @@ Route::controller(DiskReplacementController::class)
             Route::put('/{diskReplacement}', 'update')->name('update');
             Route::delete('/{diskReplacement}', 'destroy')->name('destroy');
         });
-        
-        // 超級管理員路由 - 與管理員相同的權限
-        Route::middleware(['super_admin'])->group(function(){
-            Route::get('/{diskReplacement}/edit', 'edit')->name('edit');
-            Route::put('/{diskReplacement}', 'update')->name('update');
-            Route::delete('/{diskReplacement}', 'destroy')->name('destroy');
-        });
     });
