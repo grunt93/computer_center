@@ -90,6 +90,39 @@
             padding: 0.375rem 0.75rem;
         }
     }
+    
+    /* 修復分頁按鈕樣式 */
+    .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+    }
+    
+    /* 為分頁添加正確的箭頭圖標 */
+    .pagination svg {
+        width: 20px;
+        height: 20px;
+    }
+    
+    /* 如果需要完全隱藏SVG圖標並使用純文字 */
+    .pagination svg {
+        display: none;
+    }
+    
+    /* 自定義上一頁按鈕 */
+    .pagination li:first-child a::before,
+    .pagination li:first-child span::before {
+        content: '«';
+        margin-right: 5px;
+    }
+    
+    /* 自定義下一頁按鈕 */
+    .pagination li:last-child a::after,
+    .pagination li:last-child span::after {
+        content: '»';
+        margin-left: 5px;
+    }
 </style>
 @endpush
 
@@ -251,7 +284,44 @@
             
             @if($replacements->count() > 0)
             <div class="d-flex justify-content-center mt-4">
-                {{ $replacements->withQueryString()->links() }}
+                <nav aria-label="分頁導航">
+                    <ul class="pagination">
+                        {{-- 上一頁連結 --}}
+                        @if ($replacements->onFirstPage())
+                            <li class="page-item disabled">
+                                <span class="page-link">&laquo; 上一頁</span>
+                            </li>
+                        @else
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $replacements->previousPageUrl() }}" rel="prev">&laquo; 上一頁</a>
+                            </li>
+                        @endif
+
+                        {{-- 頁碼 --}}
+                        @foreach ($replacements->getUrlRange(1, $replacements->lastPage()) as $page => $url)
+                            @if ($page == $replacements->currentPage())
+                                <li class="page-item active">
+                                    <span class="page-link">{{ $page }}</span>
+                                </li>
+                            @else
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                </li>
+                            @endif
+                        @endforeach
+
+                        {{-- 下一頁連結 --}}
+                        @if ($replacements->hasMorePages())
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $replacements->nextPageUrl() }}" rel="next">下一頁 &raquo;</a>
+                            </li>
+                        @else
+                            <li class="page-item disabled">
+                                <span class="page-link">下一頁 &raquo;</span>
+                            </li>
+                        @endif
+                    </ul>
+                </nav>
             </div>
             @endif
         </div>
