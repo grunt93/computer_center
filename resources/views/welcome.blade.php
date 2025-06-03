@@ -404,7 +404,7 @@
                             <h4>課表同步更新</h4>
                             <p class="text-muted">自動同步最新課表資料，確保教室使用排程準確無誤。</p>
                             @auth
-                                @if(Auth::user()->role === 'admin')
+                                @if(Auth::user()->role === 'admin' || Auth::user()->role === 'super_admin')
                                     <a href="{{ route('classroom.refresh.form') }}" class="btn btn-primary mt-2">
                                         <i class="bi bi-arrow-right-circle me-1"></i>更新課表
                                     </a>
