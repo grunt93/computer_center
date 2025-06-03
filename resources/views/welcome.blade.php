@@ -224,7 +224,7 @@
                                             </h4>
                                         </div>
                                         <div class="announcement-date">
-                                            <i class="bi bi-calendar3 me-1"></i>2025-05-06
+                                            <i class="bi bi-calendar3 me-1"></i>2025-06-03
                                         </div>
                                     </div>
                                     <div class="announcement-content">
@@ -236,6 +236,15 @@
 
                                             <li>控制設備開啟投影機</li>
 
+                                            <li>開啟Windows UPdate
+                                                <ul>
+                                                    <li>開啟桌面上的User資料夾</li>
+                                                    <li>找到Wu10Man_Portable資料夾</li>
+                                                    <li>開啟Wu10Man檔案</li>
+                                                    <li>點擊Enable All Services</li>
+                                                </ul>
+                                            </li>
+
                                             <li>開啟AutoSetupTool程序
                                                 <ul>
                                                     <li>開啟桌面上的User資料夾</li>
@@ -244,12 +253,26 @@
                                                 </ul>
                                             </li>
 
-                                            <li>調整觸控
+                                            <li>關閉Windows UPdate
                                                 <ul>
-                                                    <li>控制台</li>
-                                                    <li>硬體和音效</li>
-                                                    <li>平板電腦設定</li>
-                                                    <li>校正螢幕以進行手寫筆或觸控輸入</li>
+                                                    <li>開啟桌面上的User資料夾</li>
+                                                    <li>找到Wu10Man_Portable資料夾</li>
+                                                    <li>開啟Wu10Man檔案</li>
+                                                    <li>點擊Disable All Services</li>
+                                                </ul>
+                                            </li>
+
+                                            <li>調整音量
+                                                <ul>
+                                                    <li>調整音效輸出為:
+                                                        <ol>
+                                                            <li>
+                                                                (A)管理學院:EPSO PJ
+                                                            </li>
+                                                        </ol>
+                                                    </li>
+                                                    <li>右下角調整音量100%</li>
+                                                    <li>調整旋鈕到合適音量</li>
                                                 </ul>
                                             </li>
 
@@ -286,21 +309,33 @@
                                             </h4>
                                         </div>
                                         <div class="announcement-date">
-                                            <i class="bi bi-calendar3 me-1"></i>2025-05-27
+                                            <i class="bi bi-calendar3 me-1"></i>2025-06-03
                                         </div>
                                     </div>
                                     <div class="announcement-content">
                                         <ul>
                                             <li>快捷鍵(跑完BIOS後出現選擇系統選項即可按下快捷鍵)
                                                 <ul>
-                                                    <li>F10(開啟還原卡設定，若要設定發送端也在此處設置)</li> 
-                                                    <li>F9(開啟接收端)</li>   
+                                                    <li>F10(開啟還原卡設定，若要設定發送端也在此處設置)</li>
+                                                    <li>F9(開啟接收端)</li>
                                                     <li>ctrl + enter(以調適模式進入系統，下次開機將以此次調適為主)</li>
                                                     <li>enter(以還原模式進入系統)</li>
                                                 </ul>
-                                            </li> 
+                                            </li>
+
+                                            <li>發送端操作
+                                                <ul>
+                                                    <li>F10(詳細觀看上方快捷鍵公告)</li>
+                                                    <li>左側選單選擇網路拷貝</li>
+                                                    <li>選擇拷貝設定中的網路拷貝</li>
+                                                    <li>調整為模式2</li>
+                                                    <li>點擊網路拷貝的按鈕</li>
+                                                    <li>點擊網路拷貝</li>
+                                                </ul>
+                                            </li>
                                         </ul>
-                                        <p class="mt-2">其他詳情請查詢<a href="https://www.teamsoftex.com/service_tw_6.php" target="_blank" class="text-primary">(EVO system 群準科技官網)</a></p>
+                                        <p class="mt-2">其他詳情請查詢<a href="https://www.teamsoftex.com/service_tw_6.php"
+                                                target="_blank" class="text-primary">(EVO system 群準科技官網)</a></p>
                                     </div>
                                 </div>
 
