@@ -268,10 +268,14 @@
                                                         <ol>
                                                             <li>
                                                                 (A)管理學院:EPSO PJ
+                                                                <span style="color: red">若遇自裝擴大機則自行判斷輸出源</span>
                                                             </li>
                                                         </ol>
                                                     </li>
-                                                    <li>右下角調整音量100%</li>
+                                                    <li>
+                                                        右下角調整音量100%
+                                                        <span style="color: red">若遇自裝擴大機則自行判斷音量大小</span>
+                                                    </li>
                                                     <li>調整旋鈕到合適音量</li>
                                                 </ul>
                                             </li>
