@@ -304,6 +304,27 @@
                                     </div>
                                 </div>
 
+                                <!-- ipconfig 指令 -->
+                                <div class="announcement-card p-3 mb-3">
+                                    <div class="announcement-header">
+                                        <div>
+                                            <h4 class="announcement-title">
+                                                查詢網路指令
+                                            </h4>
+                                        </div>
+                                        <div class="announcement-date">
+                                            <i class="bi bi-calendar3 me-1"></i>2025-06-05
+                                        </div>
+                                    </div>
+                                    <div class="announcement-content">
+                                        <ul>
+                                            <li>ipconfig /all(顯示所有網路配置)</li>
+                                            <li>ipconfig /release(釋放ip)</li>
+                                            <li>ipconfig /renew(DHCP重抓ip)</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
                                 <!-- EVO還原卡設定 -->
                                 <div class="announcement-card p-3 mb-3">
                                     <div class="announcement-header">
