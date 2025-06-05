@@ -25,11 +25,11 @@ class DiskReplacementController extends Controller
         }
         
         if ($request->has('classroom_code') && $request->classroom_code) {
-            $query->where('classroom_code', 'like', $request->classroom_code . '%');
+            $query->where('classroom_code', $request->classroom_code); // 改為完全匹配
         }
         
-        if ($request->filled('user_name')) {
-            $query->where('user_name', 'like', '%' . $request->user_name . '%');
+        if ($request->has('user_name') && $request->user_name) { // 改為完全匹配
+            $query->where('user_name', $request->user_name);
         }
         
         if ($request->filled('start_date')) {
@@ -44,32 +44,52 @@ class DiskReplacementController extends Controller
         
         $replacements = $query->paginate(15);
         
+        // 取得學期下拉選單資料
         $semesters = DiskReplacement::select('smtr')
                     ->distinct()
                     ->orderBy('smtr', 'desc')
                     ->pluck('smtr');
                     
+        // 取得建築物下拉選單資料
         $buildings = Classroom::select(DB::raw('SUBSTRING(code, 1, 1) as building'))
                     ->distinct()
                     ->pluck('building');
-    
-        // 為編輯表單準備所需資料，排除指定教室
-        $classrooms = Classroom::whereNotIn('code', ['A220', 'A221', 'A319'])
+
+        // 取得教室代碼下拉選單資料
+        $classroomCodes = Classroom::whereNotIn('code', ['A220', 'A221', 'A319'])
                     ->orderBy('code')
-                    ->get();
-        $users = User::orderBy('name')->pluck('name');
-        
+                    ->pluck('code');
+                    
+        // 取得用戶名稱下拉選單資料
+        $userNames = DiskReplacement::select('user_name')
+                    ->distinct()
+                    ->orderBy('user_name')
+                    ->pluck('user_name');
+    
         // 檢查用戶是否為管理員或超級管理員
         $canManage = Auth::check() && (Auth::user()->role === 'admin' || Auth::user()->role === 'super_admin');
         
+        // 取得教室選項（供編輯模態框使用）
+        $classrooms = Classroom::whereNotIn('code', ['A220', 'A221', 'A319'])
+                    ->orderBy('code')
+                    ->get();
+
+        // 取得用戶名稱選項（供編輯模態框使用）                
+        $users = DiskReplacement::select('user_name')
+                    ->distinct()
+                    ->orderBy('user_name')
+                    ->pluck('user_name');
+    
         return view('disk_placement.index', compact(
             'replacements', 
             'semesters', 
             'buildings', 
             'request',
-            'classrooms',
-            'users',
-            'canManage'
+            'classrooms',  // 現在有定義了
+            'users',       // 現在有定義了
+            'canManage',
+            'classroomCodes',
+            'userNames'
         ));
     }
 

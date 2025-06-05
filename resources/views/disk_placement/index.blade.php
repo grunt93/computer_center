@@ -177,12 +177,26 @@
                             </div>
                             <div class="col-6 col-md-3">
                                 <label class="form-label">教室代碼</label>
-                                <input type="text" name="classroom_code" class="form-control" value="{{ $request->classroom_code }}">
+                                <select name="classroom_code" class="form-select">
+                                    <option value="">所有教室</option>
+                                    @foreach($classroomCodes as $code)
+                                        <option value="{{ $code }}" {{ $request->classroom_code == $code ? 'selected' : '' }}>
+                                            {{ $code }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
-                            
+
                             <div class="col-6 col-md-3">
                                 <label class="form-label">用戶名稱</label>
-                                <input type="text" name="user_name" class="form-control" value="{{ $request->user_name }}" placeholder="輸入用戶名稱">
+                                <select name="user_name" class="form-select">
+                                    <option value="">所有用戶</option>
+                                    @foreach($userNames as $userName)
+                                        <option value="{{ $userName }}" {{ $request->user_name == $userName ? 'selected' : '' }}>
+                                            {{ $userName }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                             
                             <div class="col-6 col-md-3">
